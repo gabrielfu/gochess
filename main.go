@@ -9,7 +9,7 @@ func main() {
 	// println(bb.BinaryBoard())
 	// println("=====================================")
 
-	moves := calcKnightMoves(B1)
+	moves := calcWhitePawnAttacks(A2)
 	println(moves.BinaryBoard())
 	println("=====================================")
 

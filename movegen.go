@@ -64,3 +64,27 @@ func calcKnightMoves(from Square) Bitboard {
 	}
 	return moves
 }
+
+func calcWhitePawnAttacks(from Square) Bitboard {
+	moves := Bitboard(0)
+	file := from.File()
+	if file < A {
+		moves |= 1 << (from + 9) // LEFT
+	}
+	if file > H {
+		moves |= 1 << (from + 7) // RIGHT
+	}
+	return moves
+}
+
+func calcBlackPawnAttacks(from Square) Bitboard {
+	moves := Bitboard(0)
+	file := from.File()
+	if file < A {
+		moves |= 1 << (from - 7) // LEFT
+	}
+	if file > H {
+		moves |= 1 << (from - 9) // RIGHT
+	}
+	return moves
+}
