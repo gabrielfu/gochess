@@ -2,28 +2,15 @@ package main
 
 import "fmt"
 
-// Bitboard representation of a chess board.
-type Board struct {
-	whitePawns   uint64
-	whiteKnights uint64
-	whiteBishops uint64
-	whiteRooks   uint64
-	whiteQueens  uint64
-	whiteKing    uint64
-	blackPawns   uint64
-	blackKnights uint64
-	blackBishops uint64
-	blackRooks   uint64
-	blackQueens  uint64
-	blackKing    uint64
+type Bitboard uint64
 
-	whiteTurn      bool
-	castlingRights uint8
-	enPassant      uint8
-
-	whiteOccupied uint64
-	blackOccupied uint64
-	allOccupied   uint64
+func (bb *Bitboard) ToBinaryBoard() string {
+	bin := fmt.Sprintf("%064b", *bb)
+	out := ""
+	for i := 0; i < 8; i++ {
+		out += bin[i*8:i*8+8] + "\n"
+	}
+	return out[:len(out)-1]
 }
 
 // A8 B8 C8 D8 E8 F8 G8 H8 ;
@@ -34,12 +21,12 @@ type Board struct {
 // A3 B3 C3 D3 E3 F3 G3 H3 ;
 // A2 B2 C2 D2 E2 F2 G2 H2 ;
 // A1 B1 C1 D1 E1 F1 G1 H1 ;
-type SQUARES int
+type Square int
 
 // Count from LSB.
 // H1 = 0, G1 = 1, ..., B8 = 62, A8 = 63.
 const (
-	H1 SQUARES = iota
+	H1 Square = iota
 	G1
 	F1
 	E1
@@ -105,6 +92,11 @@ const (
 	A8
 )
 
+func (sq *Square) ToBinaryBoard() string {
+	b := Bitboard(1 << *sq)
+	return b.ToBinaryBoard()
+}
+
 var SQUARE_NAMES = []string{
 	"h1", "g1", "f1", "e1", "d1", "c1", "b1", "a1",
 	"h2", "g2", "f2", "e2", "d2", "c2", "b2", "a2",
@@ -116,34 +108,52 @@ var SQUARE_NAMES = []string{
 	"h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8",
 }
 
-type PIECES uint8
+type File int
 
 const (
-	WHITE_PAWN PIECES = iota
-	WHITE_KNIGHT
-	WHITE_BISHOP
-	WHITE_ROOK
-	WHITE_QUEEN
-	WHITE_KING
-	BLACK_PAWN
-	BLACK_KNIGHT
-	BLACK_BISHOP
-	BLACK_ROOK
-	BLACK_QUEEN
-	BLACK_KING
+	H File = iota
+	G
+	F
+	E
+	D
+	C
+	B
+	A
 )
 
-var SYMBOLS = []string{
-	"♟", "♞", "♝", "♜", "♛", "♚",
-	"♙", "♘", "♗", "♖", "♕", "♔",
-	".",
+type Rank int
+
+func (sq *Square) File() File {
+	return File(*sq % 8)
 }
 
-// var SYMBOLS = []string{
-// 	"P", "N", "B", "R", "Q", "K",
-// 	"p", "n", "b", "r", "q", "k",
-// 	".",
-// }
+func (sq *Square) Rank() Rank {
+	return Rank(*sq/8) + 1
+}
+
+// Bitboard representation of a chess board.
+type Board struct {
+	whitePawns   Bitboard
+	whiteKnights Bitboard
+	whiteBishops Bitboard
+	whiteRooks   Bitboard
+	whiteQueens  Bitboard
+	whiteKing    Bitboard
+	blackPawns   Bitboard
+	blackKnights Bitboard
+	blackBishops Bitboard
+	blackRooks   Bitboard
+	blackQueens  Bitboard
+	blackKing    Bitboard
+
+	turn           Color
+	castlingRights uint8
+	enPassant      uint8
+
+	whiteOccupied Bitboard
+	blackOccupied Bitboard
+	allOccupied   Bitboard
+}
 
 func NewBoard() *Board {
 	return &Board{
@@ -159,7 +169,7 @@ func NewBoard() *Board {
 		blackRooks:     0x8100000000000000,
 		blackQueens:    0x0800000000000000,
 		blackKing:      0x1000000000000000,
-		whiteTurn:      true,
+		turn:           WHITE,
 		castlingRights: 0,
 		enPassant:      0,
 		whiteOccupied:  0x000000000000ffff,
@@ -176,7 +186,8 @@ func (b *Board) UpdateOccupied() {
 
 func (b *Board) Print() {
 	for i := 63; i >= 0; i-- {
-		print(b.GetPieceAtSquare(uint8(i)))
+		piece := b.GetPieceAtSquare(uint8(i))
+		print(SYMBOLS[piece])
 		if i%8 == 0 {
 			println()
 		}
@@ -184,34 +195,65 @@ func (b *Board) Print() {
 }
 
 // GetPieceAtSquare returns the piece at the given square (0-63).
-func (b *Board) GetPieceAtSquare(square uint8) string {
-	var mask uint64 = 1 << square
+func (b *Board) GetPieceAtSquare(square uint8) Piece {
+	var mask Bitboard = 1 << square
 	if b.whitePawns&mask != 0 {
-		return SYMBOLS[WHITE_PAWN]
+		return WHITE_PAWN
 	} else if b.whiteKnights&mask != 0 {
-		return SYMBOLS[WHITE_KNIGHT]
+		return WHITE_KNIGHT
 	} else if b.whiteBishops&mask != 0 {
-		return SYMBOLS[WHITE_BISHOP]
+		return WHITE_BISHOP
 	} else if b.whiteRooks&mask != 0 {
-		return SYMBOLS[WHITE_ROOK]
+		return WHITE_ROOK
 	} else if b.whiteQueens&mask != 0 {
-		return SYMBOLS[WHITE_QUEEN]
+		return WHITE_QUEEN
 	} else if b.whiteKing&mask != 0 {
-		return SYMBOLS[WHITE_KING]
+		return WHITE_KING
 	} else if b.blackPawns&mask != 0 {
-		return SYMBOLS[BLACK_PAWN]
+		return BLACK_PAWN
 	} else if b.blackKnights&mask != 0 {
-		return SYMBOLS[BLACK_KNIGHT]
+		return BLACK_KNIGHT
 	} else if b.blackBishops&mask != 0 {
-		return SYMBOLS[BLACK_BISHOP]
+		return BLACK_BISHOP
 	} else if b.blackRooks&mask != 0 {
-		return SYMBOLS[BLACK_ROOK]
+		return BLACK_ROOK
 	} else if b.blackQueens&mask != 0 {
-		return SYMBOLS[BLACK_QUEEN]
+		return BLACK_QUEEN
 	} else if b.blackKing&mask != 0 {
-		return SYMBOLS[BLACK_KING]
+		return BLACK_KING
 	} else {
-		return SYMBOLS[len(SYMBOLS)-1]
+		return EMPTY
+	}
+}
+
+func (b *Board) GetBbForPiece(p Piece) Bitboard {
+	switch p {
+	case WHITE_PAWN:
+		return b.whitePawns
+	case WHITE_KNIGHT:
+		return b.whiteKnights
+	case WHITE_BISHOP:
+		return b.whiteBishops
+	case WHITE_ROOK:
+		return b.whiteRooks
+	case WHITE_QUEEN:
+		return b.whiteQueens
+	case WHITE_KING:
+		return b.whiteKing
+	case BLACK_PAWN:
+		return b.blackPawns
+	case BLACK_KNIGHT:
+		return b.blackKnights
+	case BLACK_BISHOP:
+		return b.blackBishops
+	case BLACK_ROOK:
+		return b.blackRooks
+	case BLACK_QUEEN:
+		return b.blackQueens
+	case BLACK_KING:
+		return b.blackKing
+	default:
+		return 0
 	}
 }
 
@@ -219,16 +261,16 @@ func (b *Board) Move(move *Move) {
 	fmt.Println(move)
 	piece := b.GetPieceAtSquare(uint8(move.From))
 	switch piece {
-	case SYMBOLS[WHITE_PAWN]:
+	case WHITE_PAWN:
 		b.whitePawns ^= 1 << move.From
 		b.whitePawns |= 1 << move.To
-	case SYMBOLS[WHITE_KNIGHT]:
+	case WHITE_KNIGHT:
 		b.whiteKnights ^= 1 << move.From
 		b.whiteKnights |= 1 << move.To
-	case SYMBOLS[BLACK_PAWN]:
+	case BLACK_PAWN:
 		b.blackPawns ^= 1 << move.From
 		b.blackPawns |= 1 << move.To
 	default:
-		println("Unknown piece: " + piece)
+		println("Unknown piece: " + piece.Symbol())
 	}
 }
