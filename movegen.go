@@ -1,5 +1,41 @@
 package main
 
+var KingMovesTable [64]Bitboard
+var KnightMovesTable [64]Bitboard
+var WhitePawnAttacksTable [64]Bitboard
+var BlackPawnAttacksTable [64]Bitboard
+
+func InitMovesTables() {
+	initKingMovesTable()
+	initKnightMovesTable()
+	initWhitePawnAttacksTable()
+	initBlackPawnAttacksTable()
+}
+
+func initKingMovesTable() {
+	for i := 0; i < 64; i++ {
+		KingMovesTable[i] = calcKingMoves(Square(i))
+	}
+}
+
+func initKnightMovesTable() {
+	for i := 0; i < 64; i++ {
+		KnightMovesTable[i] = calcKnightMoves(Square(i))
+	}
+}
+
+func initWhitePawnAttacksTable() {
+	for i := 0; i < 56; i++ {
+		WhitePawnAttacksTable[i] = calcWhitePawnAttacks(Square(i))
+	}
+}
+
+func initBlackPawnAttacksTable() {
+	for i := 8; i < 64; i++ {
+		BlackPawnAttacksTable[i] = calcBlackPawnAttacks(Square(i))
+	}
+}
+
 func calcKingMoves(from Square) Bitboard {
 	moves := Bitboard(0)
 	file := from.File()

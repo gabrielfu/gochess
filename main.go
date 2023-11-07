@@ -9,7 +9,7 @@ func main() {
 	// println(bb.BinaryBoard())
 	// println("=====================================")
 
-	moves := calcWhitePawnAttacks(A2)
+	moves := calcWhitePawnAttacks(D8)
 	println(moves.BinaryBoard())
 	println("=====================================")
 
@@ -17,6 +17,9 @@ func main() {
 	dest := moves & allowedTos
 	println(dest.BinaryBoard())
 	println("=====================================")
+
+	InitMovesTables()
+	println(KingMovesTable[D3].BinaryBoard())
 
 	// var squares = []SQUARES{A1, A2, D1, E1, H7, G8}
 	// var expected = []PIECES{WHITE_ROOK, WHITE_PAWN, WHITE_KING, WHITE_QUEEN, BLACK_PAWN, BLACK_KNIGHT}
