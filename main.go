@@ -1,25 +1,34 @@
 package main
 
 func main() {
-	board := NewBoard()
-	board.Print()
-	println("=====================================")
-
-	// bb := board.whitePawns
-	// println(bb.BinaryBoard())
+	// board := NewBoard()
+	// board.Print()
 	// println("=====================================")
 
-	moves := calcWhitePawnAttacks(D8)
-	println(moves.BinaryBoard())
-	println("=====================================")
+	// // bb := board.whitePawns
+	// // println(bb.BinaryBoard())
+	// // println("=====================================")
 
-	allowedTos := ^board.whiteOccupied
-	dest := moves & allowedTos
-	println(dest.BinaryBoard())
-	println("=====================================")
+	// moves := calcWhitePawnAttacks(D8)
+	// println(moves.BinaryBoard())
+	// println("=====================================")
+
+	// allowedTos := ^board.whiteOccupied
+	// dest := moves & allowedTos
+	// println(dest.BinaryBoard())
+	// println("=====================================")
 
 	InitMovesTables()
-	println(KingMovesTable[D3].BinaryBoard())
+	// println(KingMovesTable[D3].BinaryBoard())
+
+	g := NewGame()
+	legalMoves := g.LegalMoves()
+	for _, move := range legalMoves {
+		board := NewBoard()
+		board.Move(move)
+		board.Print()
+		println("=====================================")
+	}
 
 	// var squares = []SQUARES{A1, A2, D1, E1, H7, G8}
 	// var expected = []PIECES{WHITE_ROOK, WHITE_PAWN, WHITE_KING, WHITE_QUEEN, BLACK_PAWN, BLACK_KNIGHT}
