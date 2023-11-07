@@ -1,10 +1,5 @@
 package main
 
-// func calcKnightMoves(from Square) {
-// 	moves := Bitboard(0)
-
-// }
-
 func calcKingMoves(from Square) Bitboard {
 	moves := Bitboard(0)
 	file := from.File()
