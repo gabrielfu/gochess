@@ -4,8 +4,8 @@ import "fmt"
 
 type Bitboard uint64
 
-func (bb *Bitboard) ToBinaryBoard() string {
-	bin := fmt.Sprintf("%064b", *bb)
+func (bb Bitboard) BinaryBoard() string {
+	bin := fmt.Sprintf("%064b", bb)
 	out := ""
 	for i := 0; i < 8; i++ {
 		out += bin[i*8:i*8+8] + "\n"
@@ -92,9 +92,8 @@ const (
 	A8
 )
 
-func (sq *Square) ToBinaryBoard() string {
-	b := Bitboard(1 << *sq)
-	return b.ToBinaryBoard()
+func (sq Square) BinaryBoard() string {
+	return Bitboard(1 << sq).BinaryBoard()
 }
 
 var SQUARE_NAMES = []string{
@@ -106,6 +105,10 @@ var SQUARE_NAMES = []string{
 	"h6", "g6", "f6", "e6", "d6", "c6", "b6", "a6",
 	"h7", "g7", "f7", "e7", "d7", "c7", "b7", "a7",
 	"h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8",
+}
+
+func (sq Square) String() string {
+	return SQUARE_NAMES[sq]
 }
 
 type File int
@@ -121,14 +124,41 @@ const (
 	A
 )
 
-type Rank int
-
-func (sq *Square) File() File {
-	return File(*sq % 8)
+var FILE_NAMES = []string{
+	"h", "g", "f", "e", "d", "c", "b", "a",
 }
 
-func (sq *Square) Rank() Rank {
-	return Rank(*sq/8) + 1
+func (f File) String() string {
+	return FILE_NAMES[f]
+}
+
+type Rank int
+
+const (
+	R1 Rank = iota
+	R2
+	R3
+	R4
+	R5
+	R6
+	R7
+	R8
+)
+
+var RANK_NAMES = []string{
+	"R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8",
+}
+
+func (r Rank) String() string {
+	return RANK_NAMES[r]
+}
+
+func (sq Square) File() File {
+	return File(sq % 8)
+}
+
+func (sq Square) Rank() Rank {
+	return Rank(sq / 8)
 }
 
 // Bitboard representation of a chess board.

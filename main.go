@@ -6,15 +6,16 @@ func main() {
 	// println("=====================================")
 
 	// bb := board.whitePawns
-	// println(bb.ToBinaryBoard())
+	// println(bb.BinaryBoard())
 	// println("=====================================")
 
 	sq := D2
-	println(sq.ToBinaryBoard())
+	println(sq.Rank().String())
+	println(sq.BinaryBoard())
 	println("=====================================")
 
 	moves := calcKnightMoves(sq)
-	println(moves.ToBinaryBoard())
+	println(moves.BinaryBoard())
 	println("=====================================")
 
 	// var squares = []SQUARES{A1, A2, D1, E1, H7, G8}
