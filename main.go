@@ -1,21 +1,21 @@
 package main
 
 func main() {
-	// board := NewBoard()
-	// board.Print()
-	// println("=====================================")
+	board := NewBoard()
+	board.Print()
+	println("=====================================")
 
 	// bb := board.whitePawns
 	// println(bb.BinaryBoard())
 	// println("=====================================")
 
-	sq := D2
-	println(sq.Rank().String())
-	println(sq.BinaryBoard())
+	moves := calcKnightMoves(B1)
+	println(moves.BinaryBoard())
 	println("=====================================")
 
-	moves := calcKnightMoves(sq)
-	println(moves.BinaryBoard())
+	allowedTos := ^board.whiteOccupied
+	dest := moves & allowedTos
+	println(dest.BinaryBoard())
 	println("=====================================")
 
 	// var squares = []SQUARES{A1, A2, D1, E1, H7, G8}
