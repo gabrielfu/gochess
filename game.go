@@ -8,8 +8,12 @@ func NewGame() *Game {
 	InitMovesTables()
 
 	return &Game{
-		board: *NewBoard(),
+		board: *NewStartingBoard(),
 	}
+}
+
+func (g *Game) SetBoard(board Board) {
+	g.board = board
 }
 
 // LegalMoves returns all legal moves for the current player.

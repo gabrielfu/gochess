@@ -196,7 +196,8 @@ type Board struct {
 	allOccupied   Bitboard
 }
 
-func NewBoard() *Board {
+// NewStartingBoard returns a new board with the starting position.
+func NewStartingBoard() *Board {
 	return &Board{
 		whitePawns:     0x000000000000ff00,
 		whiteKnights:   0x0000000000000042,
