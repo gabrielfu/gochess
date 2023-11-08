@@ -13,6 +13,17 @@ func (bb Bitboard) BinaryBoard() string {
 	return out[:len(out)-1]
 }
 
+// Squares returns a slice of squares that are set in the bitboard.
+func (bb Bitboard) Squares() []Square {
+	squares := []Square{}
+	for i := 0; i < 64; i++ {
+		if bb&(1<<uint(i)) != 0 {
+			squares = append(squares, Square(i))
+		}
+	}
+	return squares
+}
+
 // A8 B8 C8 D8 E8 F8 G8 H8 ;
 // A7 B7 C7 D7 E7 F7 G7 H7 ;
 // A6 B6 C6 D6 E6 F6 G6 H6 ;

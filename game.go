@@ -31,21 +31,12 @@ func (g *Game) LegalMoves() []*Move {
 		}
 
 		// For each "from" square
-		for from := 0; from < 64; from++ {
-			// If no such piece on this square, skip
-			if bb&(1<<uint(from)) == 0 {
-				continue
-			}
-
+		for _, from := range bb.Squares() {
 			switch p {
 			case WHITE_KNIGHT, BLACK_KNIGHT:
 				toBb := calcKnightMoves(Square(from)) & allowedTos
-				// should optimize this
-				for to := 0; to < 64; to++ {
-					if toBb&(1<<uint(to)) == 0 {
-						continue
-					}
-
+				// For each "to" square
+				for _, to := range toBb.Squares() {
 					moves = append(moves, &Move{
 						From: Square(from),
 						To:   Square(to),
