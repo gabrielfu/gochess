@@ -18,7 +18,7 @@ func (g *Game) SetBoard(board *Board) {
 
 // LegalMoves returns all legal moves for the current player.
 func (g *Game) LegalMoves() []*Move {
-	candidatePieces := []Piece{}
+	var candidatePieces []Piece
 	var allowedTos Bitboard
 	var enemyOccupied Bitboard
 	switch g.board.turn {
