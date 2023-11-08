@@ -10,6 +10,7 @@ func NewGame() *Game {
 	}
 }
 
+// LegalMoves returns all legal moves for the current player.
 func (g *Game) LegalMoves() []*Move {
 	candidatePieces := []Piece{}
 	var allowedTos Bitboard
@@ -47,4 +48,9 @@ func (g *Game) LegalMoves() []*Move {
 		}
 	}
 	return moves
+}
+
+// Move executes the given move on the board.
+func (g *Game) Move(move *Move) {
+	g.board.Move(move)
 }
