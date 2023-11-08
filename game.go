@@ -5,6 +5,8 @@ type Game struct {
 }
 
 func NewGame() *Game {
+	InitMovesTables()
+
 	return &Game{
 		board: *NewBoard(),
 	}
@@ -59,8 +61,19 @@ func (g *Game) LegalMoves() []*Move {
 						piece: p,
 					})
 				}
+			case BLACK_PAWN:
+				attackBb := GetBlackPawnAttacks(Square(from)) & enemyOccupied
+				moveBb := (GetBlackPawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				toBb := attackBb | moveBb
+				// For each "to" square
+				for _, to := range toBb.Squares() {
+					moves = append(moves, &Move{
+						From:  Square(from),
+						To:    Square(to),
+						piece: p,
+					})
+				}
 			}
-
 		}
 	}
 	return moves

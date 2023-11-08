@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func main() {
 	// board := NewBoard()
 	// board.Print()
@@ -18,17 +20,16 @@ func main() {
 	// println(dest.BinaryBoard())
 	// println("=====================================")
 
-	InitMovesTables()
-	// println(KingMovesTable[D3].BinaryBoard())
-
 	g := NewGame()
 	legalMoves := g.LegalMoves()
 	for _, move := range legalMoves {
-		board := NewBoard()
-		board.Move(move)
-		board.Print()
+		fmt.Println(move)
+		// board := NewBoard()
+		// board.Move(move)
+		// board.Print()
 		println("=====================================")
 	}
+	println(len(legalMoves))
 
 	// var squares = []SQUARES{A1, A2, D1, E1, H7, G8}
 	// var expected = []PIECES{WHITE_ROOK, WHITE_PAWN, WHITE_KING, WHITE_QUEEN, BLACK_PAWN, BLACK_KNIGHT}
