@@ -36,3 +36,38 @@ func TestGetPieceAtSquare(t *testing.T) {
 		t.Errorf("Expected BlackRook, got %v", piece)
 	}
 }
+
+func TestMoveWithoutCapture(t *testing.T) {
+	b := NewEmptyBoard()
+	// Test moving a pawn without capture.
+	b.AddPieceToSquare(WHITE_PAWN, D2)
+	b.Move(&Move{
+		From:  D2,
+		To:    D4,
+		Piece: WHITE_PAWN,
+	})
+	if b.whitePawns != 1<<D4 {
+		t.Errorf("Expected 1<<D4, got %v", b.whitePawns)
+	}
+	if b.whitePawns&1<<D2 != 0 {
+		t.Errorf("Expected 0, got %v", b.whitePawns&1<<D2)
+	}
+}
+
+func TestMoveWithCapture(t *testing.T) {
+	b := NewEmptyBoard()
+	// Test moving a pawn with capture.
+	b.AddPieceToSquare(WHITE_PAWN, D2)
+	b.AddPieceToSquare(BLACK_ROOK, E3)
+	b.Move(&Move{
+		From:  D2,
+		To:    E3,
+		Piece: WHITE_PAWN,
+	})
+	if b.whitePawns != 1<<E3 {
+		t.Errorf("Expected 1<<E3, got %v", b.whitePawns)
+	}
+	if b.blackRooks != 0 {
+		t.Errorf("Expected 0, got %v", b.blackRooks)
+	}
+}
