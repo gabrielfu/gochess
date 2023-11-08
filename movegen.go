@@ -5,6 +5,10 @@ var KnightMovesTable [64]Bitboard
 var WhitePawnAttacksTable [64]Bitboard
 var BlackPawnAttacksTable [64]Bitboard
 
+/*
+* Non sliding pieces
+ */
+
 func InitMovesTables() {
 	initKingMovesTable()
 	initKnightMovesTable()
@@ -97,6 +101,7 @@ func calcKnightMoves(from Square) Bitboard {
 }
 
 func calcWhitePawnAttacks(from Square) Bitboard {
+	// TODO: Need to add en passant
 	moves := Bitboard(0)
 	file := from.File()
 	if file < A {
@@ -109,6 +114,7 @@ func calcWhitePawnAttacks(from Square) Bitboard {
 }
 
 func calcBlackPawnAttacks(from Square) Bitboard {
+	// TODO: Need to add en passant
 	moves := Bitboard(0)
 	file := from.File()
 	if file < A {
@@ -118,4 +124,50 @@ func calcBlackPawnAttacks(from Square) Bitboard {
 		moves |= 1 << (from - 9) // RIGHT
 	}
 	return moves
+}
+
+func calcWhitePawnMoves(from Square) Bitboard {
+	moves := Bitboard(0)
+	if from <= A7 {
+		moves |= 1 << (from + 8) // UP
+	}
+	if from.Rank() == R2 {
+		moves |= 1 << (from + 16) // UP 2
+	}
+	return moves
+}
+
+func calcBlackPawnMoves(from Square) Bitboard {
+	moves := Bitboard(0)
+	if from >= A2 {
+		moves |= 1 << (from - 8) // DOWN
+	}
+	if from.Rank() == R7 {
+		moves |= 1 << (from - 16) // DOWN 2
+	}
+	return moves
+}
+
+func GetKnightMoves(from Square) Bitboard {
+	return KnightMovesTable[from]
+}
+
+func GetKingMoves(from Square) Bitboard {
+	return KingMovesTable[from]
+}
+
+func GetWhitePawnAttacks(from Square) Bitboard {
+	return WhitePawnAttacksTable[from]
+}
+
+func GetBlackPawnAttacks(from Square) Bitboard {
+	return BlackPawnAttacksTable[from]
+}
+
+func GetWhitePawnMoves(from Square) Bitboard {
+	return calcWhitePawnMoves(from)
+}
+
+func GetBlackPawnMoves(from Square) Bitboard {
+	return calcBlackPawnMoves(from)
 }
