@@ -340,20 +340,22 @@ func (b *Board) Move(move *Move) error {
 		return fmt.Errorf("Piece mismatch: " + piece.Symbol() + " != " + move.Piece.Symbol())
 	}
 
-	target := b.GetPieceAtSquare(move.To)
-
 	bb := b.GetBbForPiece(piece)
 	if bb == nil || *bb == 0 {
 		return fmt.Errorf("No piece at square: " + move.From.String())
 	}
+
+	// Capture target
+	target := b.GetPieceAtSquare(move.To)
 	if target != EMPTY {
 		targetBb := b.GetBbForPiece(target)
 		if targetBb == nil || *targetBb == 0 {
 			return fmt.Errorf("Invalid target piece: " + target.Symbol())
 		}
-		// capture target
 		*targetBb &^= (1 << move.To)
 	}
+
+	// Move the piece
 	// clear from "From" and set to "To"
 	*bb &^= (1 << move.From)
 	*bb |= (1 << move.To)
