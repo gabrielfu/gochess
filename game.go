@@ -38,41 +38,27 @@ func (g *Game) LegalMoves() []*Move {
 
 		// For each "from" square
 		for _, from := range bb.Squares() {
+			var toBb Bitboard = Bitboard(0)
 			switch p {
 			case WHITE_KNIGHT, BLACK_KNIGHT:
-				toBb := GetKnightMoves(Square(from)) & allowedTos
-				// For each "to" square
-				for _, to := range toBb.Squares() {
-					moves = append(moves, &Move{
-						From:  Square(from),
-						To:    Square(to),
-						piece: p,
-					})
-				}
+				toBb = GetKnightMoves(Square(from)) & allowedTos
 			case WHITE_PAWN:
 				attackBb := GetWhitePawnAttacks(Square(from)) & enemyOccupied
 				moveBb := (GetWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
-				toBb := attackBb | moveBb
-				// For each "to" square
-				for _, to := range toBb.Squares() {
-					moves = append(moves, &Move{
-						From:  Square(from),
-						To:    Square(to),
-						piece: p,
-					})
-				}
+				toBb = attackBb | moveBb
 			case BLACK_PAWN:
 				attackBb := GetBlackPawnAttacks(Square(from)) & enemyOccupied
 				moveBb := (GetBlackPawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
-				toBb := attackBb | moveBb
-				// For each "to" square
-				for _, to := range toBb.Squares() {
-					moves = append(moves, &Move{
-						From:  Square(from),
-						To:    Square(to),
-						piece: p,
-					})
-				}
+				toBb = attackBb | moveBb
+			}
+
+			// For each "to" square
+			for _, to := range toBb.Squares() {
+				moves = append(moves, &Move{
+					From:  Square(from),
+					To:    Square(to),
+					Piece: p,
+				})
 			}
 		}
 	}

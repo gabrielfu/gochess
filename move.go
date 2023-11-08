@@ -1,28 +1,25 @@
 package main
 
 type Move struct {
-	From Square
-	To   Square
+	From  Square
+	To    Square
+	Piece Piece
 
-	piece       Piece
 	validated   bool
 	isCapture   bool
 	isPromotion bool
 }
 
-func NewMove(from Square, to Square) *Move {
+func NewMove(from Square, to Square, piece Piece) *Move {
 	return &Move{
-		From: from,
-		To:   to,
+		From:  from,
+		To:    to,
+		Piece: piece,
 	}
 }
 
 func (m *Move) String() string {
-	return SYMBOLS[m.piece] + " " + SQUARE_NAMES[m.From] + " -> " + SQUARE_NAMES[m.To]
-}
-
-func (m *Move) Piece() Piece {
-	return m.piece
+	return SYMBOLS[m.Piece] + " " + SQUARE_NAMES[m.From] + " -> " + SQUARE_NAMES[m.To]
 }
 
 func (m *Move) Validated() bool {
