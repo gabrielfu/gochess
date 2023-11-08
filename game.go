@@ -32,7 +32,7 @@ func (g *Game) LegalMoves() []*Move {
 	for _, p := range candidatePieces {
 		bb := g.board.GetBbForPiece(p)
 		// If no more such pieces on the board, skip
-		if bb == 0 {
+		if bb == nil || *bb == 0 {
 			continue
 		}
 

@@ -269,34 +269,34 @@ func (b *Board) GetPieceAtSquare(square uint8) Piece {
 	}
 }
 
-func (b *Board) GetBbForPiece(p Piece) Bitboard {
+func (b *Board) GetBbForPiece(p Piece) *Bitboard {
 	switch p {
 	case WHITE_PAWN:
-		return b.whitePawns
+		return &b.whitePawns
 	case WHITE_KNIGHT:
-		return b.whiteKnights
+		return &b.whiteKnights
 	case WHITE_BISHOP:
-		return b.whiteBishops
+		return &b.whiteBishops
 	case WHITE_ROOK:
-		return b.whiteRooks
+		return &b.whiteRooks
 	case WHITE_QUEEN:
-		return b.whiteQueens
+		return &b.whiteQueens
 	case WHITE_KING:
-		return b.whiteKing
+		return &b.whiteKing
 	case BLACK_PAWN:
-		return b.blackPawns
+		return &b.blackPawns
 	case BLACK_KNIGHT:
-		return b.blackKnights
+		return &b.blackKnights
 	case BLACK_BISHOP:
-		return b.blackBishops
+		return &b.blackBishops
 	case BLACK_ROOK:
-		return b.blackRooks
+		return &b.blackRooks
 	case BLACK_QUEEN:
-		return b.blackQueens
+		return &b.blackQueens
 	case BLACK_KING:
-		return b.blackKing
+		return &b.blackKing
 	default:
-		return 0
+		return nil
 	}
 }
 
@@ -305,30 +305,15 @@ func (b *Board) Move(move *Move) error {
 	if piece != move.Piece {
 		return fmt.Errorf("Piece mismatch: " + piece.Symbol() + " != " + move.Piece.Symbol())
 	}
-	switch piece {
-	case WHITE_PAWN:
-		b.whitePawns ^= 1 << move.From
-		b.whitePawns |= 1 << move.To
-	case WHITE_KNIGHT:
-		b.whiteKnights ^= 1 << move.From
-		b.whiteKnights |= 1 << move.To
-	case WHITE_ROOK:
-		b.whiteRooks ^= 1 << move.From
-		b.whiteRooks |= 1 << move.To
-	case WHITE_BISHOP:
-		b.whiteBishops ^= 1 << move.From
-		b.whiteBishops |= 1 << move.To
-	case WHITE_QUEEN:
-		b.whiteQueens ^= 1 << move.From
-		b.whiteQueens |= 1 << move.To
-	case BLACK_PAWN:
-		b.blackPawns ^= 1 << move.From
-		b.blackPawns |= 1 << move.To
-	case EMPTY:
+
+	bb := b.GetBbForPiece(piece)
+	if bb == nil || *bb == 0 {
 		return fmt.Errorf("No piece at square: " + move.From.String())
-	default:
-		return fmt.Errorf("Unimplemented: " + piece.Symbol())
 	}
+	// clear from "From" and set to "To"
+	*bb &^= (1 << move.From)
+	*bb |= (1 << move.To)
+
 	// Update occupied bitboards
 	b.UpdateOccupied()
 	// Next player's turn
