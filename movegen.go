@@ -104,6 +104,9 @@ func calcKnightMoves(from Square) Bitboard {
 func calcWhitePawnAttacks(from Square) Bitboard {
 	// TODO: Need to add en passant
 	moves := Bitboard(0)
+	if from.Rank() == R8 {
+		return moves
+	}
 	file := from.File()
 	if file < A {
 		moves |= 1 << (from + 9) // LEFT
@@ -117,6 +120,9 @@ func calcWhitePawnAttacks(from Square) Bitboard {
 func calcBlackPawnAttacks(from Square) Bitboard {
 	// TODO: Need to add en passant
 	moves := Bitboard(0)
+	if from.Rank() == R1 {
+		return moves
+	}
 	file := from.File()
 	if file < A {
 		moves |= 1 << (from - 7) // LEFT
@@ -129,6 +135,9 @@ func calcBlackPawnAttacks(from Square) Bitboard {
 
 func calcWhitePawnMoves(from Square) Bitboard {
 	moves := Bitboard(0)
+	if from.Rank() == R8 {
+		return moves
+	}
 	if from <= A7 {
 		moves |= 1 << (from + 8) // UP
 	}
@@ -140,6 +149,9 @@ func calcWhitePawnMoves(from Square) Bitboard {
 
 func calcBlackPawnMoves(from Square) Bitboard {
 	moves := Bitboard(0)
+	if from.Rank() == R1 {
+		return moves
+	}
 	if from >= A2 {
 		moves |= 1 << (from - 8) // DOWN
 	}
