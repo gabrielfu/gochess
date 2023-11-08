@@ -313,6 +313,8 @@ func (b *Board) Move(move *Move) {
 	default:
 		println("Unknown piece: " + piece.Symbol())
 	}
+	// Update occupied bitboards
+	b.UpdateOccupied()
 	// Next player's turn
 	b.turn = 1 - b.turn
 }
