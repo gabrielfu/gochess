@@ -1,18 +1,18 @@
 package main
 
 type Game struct {
-	board Board
+	board *Board
 }
 
 func NewGame() *Game {
 	InitMovesTables()
 
 	return &Game{
-		board: *NewStartingBoard(),
+		board: NewStartingBoard(),
 	}
 }
 
-func (g *Game) SetBoard(board Board) {
+func (g *Game) SetBoard(board *Board) {
 	g.board = board
 }
 
