@@ -1,6 +1,33 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+)
+
+func TestBitboardBinaryBoard(t *testing.T) {
+	b := Bitboard(1 << 22)
+	expected := "00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000\n00000000"
+	if b.BinaryBoard() != expected {
+		t.Errorf("Expected %v, got %v", expected, b.BinaryBoard())
+	}
+}
+
+func TestBitboardSquares(t *testing.T) {
+	var tests = []struct {
+		b        Bitboard
+		expected []Square
+	}{
+		{Bitboard(1 << 44), []Square{D6}},
+		{Bitboard(1<<22 | 1<<23), []Square{B3, A3}},
+	}
+	for _, tt := range tests {
+		if !cmp.Equal(tt.b.Squares(), tt.expected) {
+			t.Errorf("Expected %v, got %v", tt.expected, tt.b.Squares())
+		}
+	}
+}
 
 func TestAddPieceToSquare(t *testing.T) {
 	b := NewEmptyBoard()
