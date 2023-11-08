@@ -299,7 +299,6 @@ func (b *Board) GetBbForPiece(p Piece) Bitboard {
 }
 
 func (b *Board) Move(move *Move) {
-	fmt.Println(move)
 	piece := b.GetPieceAtSquare(uint8(move.From))
 	switch piece {
 	case WHITE_PAWN:

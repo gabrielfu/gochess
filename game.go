@@ -14,13 +14,16 @@ func NewGame() *Game {
 func (g *Game) LegalMoves() []*Move {
 	candidatePieces := []Piece{}
 	var allowedTos Bitboard
+	var enemyOccupied Bitboard
 	switch g.board.turn {
 	case WHITE:
 		candidatePieces = WHITE_PIECES
 		allowedTos = ^g.board.whiteOccupied
+		enemyOccupied = g.board.blackOccupied
 	case BLACK:
 		candidatePieces = BLACK_PIECES
 		allowedTos = ^g.board.blackOccupied
+		enemyOccupied = g.board.whiteOccupied
 	}
 
 	moves := []*Move{}
@@ -39,8 +42,21 @@ func (g *Game) LegalMoves() []*Move {
 				// For each "to" square
 				for _, to := range toBb.Squares() {
 					moves = append(moves, &Move{
-						From: Square(from),
-						To:   Square(to),
+						From:  Square(from),
+						To:    Square(to),
+						piece: p,
+					})
+				}
+			case WHITE_PAWN:
+				attackBb := calcWhitePawnAttacks(Square(from)) & enemyOccupied
+				moveBb := (calcWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				toBb := attackBb | moveBb
+				// For each "to" square
+				for _, to := range toBb.Squares() {
+					moves = append(moves, &Move{
+						From:  Square(from),
+						To:    Square(to),
+						piece: p,
 					})
 				}
 			}
