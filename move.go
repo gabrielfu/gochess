@@ -19,7 +19,7 @@ func NewMove(from Square, to Square, piece Piece) *Move {
 }
 
 func (m *Move) String() string {
-	return SYMBOLS[m.Piece] + " " + SQUARE_NAMES[m.From] + " -> " + SQUARE_NAMES[m.To]
+	return m.Piece.Symbol() + " " + m.From.String() + " -> " + m.To.String()
 }
 
 func (m *Move) Validated() bool {
