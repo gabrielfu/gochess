@@ -38,7 +38,7 @@ func (g *Game) LegalMoves() []*Move {
 		for _, from := range bb.Squares() {
 			switch p {
 			case WHITE_KNIGHT, BLACK_KNIGHT:
-				toBb := calcKnightMoves(Square(from)) & allowedTos
+				toBb := GetKnightMoves(Square(from)) & allowedTos
 				// For each "to" square
 				for _, to := range toBb.Squares() {
 					moves = append(moves, &Move{
@@ -48,8 +48,8 @@ func (g *Game) LegalMoves() []*Move {
 					})
 				}
 			case WHITE_PAWN:
-				attackBb := calcWhitePawnAttacks(Square(from)) & enemyOccupied
-				moveBb := (calcWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				attackBb := GetWhitePawnAttacks(Square(from)) & enemyOccupied
+				moveBb := (GetWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
 				toBb := attackBb | moveBb
 				// For each "to" square
 				for _, to := range toBb.Squares() {
