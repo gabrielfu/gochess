@@ -196,6 +196,30 @@ type Board struct {
 	allOccupied   Bitboard
 }
 
+// NewEmptyBoard returns a new board with no pieces.
+func NewEmptyBoard() *Board {
+	return &Board{
+		whitePawns:     0,
+		whiteKnights:   0,
+		whiteBishops:   0,
+		whiteRooks:     0,
+		whiteQueens:    0,
+		whiteKing:      0,
+		blackPawns:     0,
+		blackKnights:   0,
+		blackBishops:   0,
+		blackRooks:     0,
+		blackQueens:    0,
+		blackKing:      0,
+		turn:           WHITE,
+		castlingRights: 0,
+		enPassant:      0,
+		whiteOccupied:  0,
+		blackOccupied:  0,
+		allOccupied:    0,
+	}
+}
+
 // NewStartingBoard returns a new board with the starting position.
 func NewStartingBoard() *Board {
 	return &Board{
@@ -220,6 +244,15 @@ func NewStartingBoard() *Board {
 	}
 }
 
+func (b *Board) AddPieceToSquare(p Piece, sq Square) {
+	bb := b.GetBbForPiece(p)
+	if bb == nil {
+		return
+	}
+	*bb |= (1 << sq)
+	b.UpdateOccupied()
+}
+
 func (b *Board) UpdateOccupied() {
 	b.whiteOccupied = b.whitePawns | b.whiteKnights | b.whiteBishops | b.whiteRooks | b.whiteQueens | b.whiteKing
 	b.blackOccupied = b.blackPawns | b.blackKnights | b.blackBishops | b.blackRooks | b.blackQueens | b.blackKing
@@ -229,7 +262,7 @@ func (b *Board) UpdateOccupied() {
 func (b *Board) Visualize() string {
 	out := ""
 	for i := 63; i >= 0; i-- {
-		piece := b.GetPieceAtSquare(uint8(i))
+		piece := b.GetPieceAtSquare(Square(i))
 		out += piece.Symbol()
 		if i%8 == 0 {
 			out += "\n"
@@ -239,7 +272,7 @@ func (b *Board) Visualize() string {
 }
 
 // GetPieceAtSquare returns the piece at the given square (0-63).
-func (b *Board) GetPieceAtSquare(square uint8) Piece {
+func (b *Board) GetPieceAtSquare(square Square) Piece {
 	var mask Bitboard = 1 << square
 	if b.whitePawns&mask != 0 {
 		return WHITE_PAWN
@@ -302,7 +335,7 @@ func (b *Board) GetBbForPiece(p Piece) *Bitboard {
 }
 
 func (b *Board) Move(move *Move) error {
-	piece := b.GetPieceAtSquare(uint8(move.From))
+	piece := b.GetPieceAtSquare(move.From)
 	if piece != move.Piece {
 		return fmt.Errorf("Piece mismatch: " + piece.Symbol() + " != " + move.Piece.Symbol())
 	}
