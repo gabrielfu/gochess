@@ -3,6 +3,21 @@ package main
 import "fmt"
 
 func main() {
+	// TODO: captures
+	// TODO: sliding pieces
+	// TODO: castling
+	// TODO: en passant
+	// TODO: promotion
+
+	// TODO: move validation
+	// TODO: check detection
+	// TODO: checkmate detection
+	// TODO: stalemate detection
+	// TODO: draw conditions
+
+	// TODO: FEN parsing
+	// TODO: PGN parsing
+
 	// board := NewBoard()
 	// board.Print()
 	// println("=====================================")
@@ -21,6 +36,17 @@ func main() {
 	// println("=====================================")
 
 	g := NewGame()
+	g.Move(&Move{
+		From:  D2,
+		To:    D4,
+		Piece: WHITE_PAWN,
+	})
+	g.Move(&Move{
+		From:  E7,
+		To:    E5,
+		Piece: BLACK_PAWN,
+	})
+	println(g.board.Visualize())
 	legalMoves := g.LegalMoves()
 	for _, move := range legalMoves {
 		fmt.Println(move)

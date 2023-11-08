@@ -225,14 +225,16 @@ func (b *Board) UpdateOccupied() {
 	b.allOccupied = b.whiteOccupied | b.blackOccupied
 }
 
-func (b *Board) Print() {
+func (b *Board) Visualize() string {
+	out := ""
 	for i := 63; i >= 0; i-- {
 		piece := b.GetPieceAtSquare(uint8(i))
-		print(SYMBOLS[piece])
+		out += piece.Symbol()
 		if i%8 == 0 {
-			println()
+			out += "\n"
 		}
 	}
+	return out
 }
 
 // GetPieceAtSquare returns the piece at the given square (0-63).
@@ -298,7 +300,7 @@ func (b *Board) GetBbForPiece(p Piece) Bitboard {
 	}
 }
 
-func (b *Board) Move(move *Move) {
+func (b *Board) Move(move *Move) error {
 	piece := b.GetPieceAtSquare(uint8(move.From))
 	switch piece {
 	case WHITE_PAWN:
@@ -311,10 +313,11 @@ func (b *Board) Move(move *Move) {
 		b.blackPawns ^= 1 << move.From
 		b.blackPawns |= 1 << move.To
 	default:
-		println("Unknown piece: " + piece.Symbol())
+		return fmt.Errorf("Unknown piece: " + piece.Symbol())
 	}
 	// Update occupied bitboards
 	b.UpdateOccupied()
 	// Next player's turn
 	b.turn = 1 - b.turn
+	return nil
 }
