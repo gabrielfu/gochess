@@ -312,8 +312,10 @@ func (b *Board) Move(move *Move) error {
 	case BLACK_PAWN:
 		b.blackPawns ^= 1 << move.From
 		b.blackPawns |= 1 << move.To
+	case EMPTY:
+		return fmt.Errorf("No piece at square: " + move.From.String())
 	default:
-		return fmt.Errorf("Unknown piece: " + piece.Symbol())
+		return fmt.Errorf("Unimplemented: " + piece.Symbol())
 	}
 	// Update occupied bitboards
 	b.UpdateOccupied()

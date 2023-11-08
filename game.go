@@ -66,6 +66,6 @@ func (g *Game) LegalMoves() []*Move {
 }
 
 // Move executes the given move on the board.
-func (g *Game) Move(move *Move) {
-	g.board.Move(move)
+func (g *Game) Move(move *Move) error {
+	return g.board.Move(move)
 }
