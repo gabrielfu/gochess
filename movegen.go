@@ -6,7 +6,7 @@ var WhitePawnAttacksTable [64]Bitboard
 var BlackPawnAttacksTable [64]Bitboard
 
 /*
-* Non sliding pieces
+ * Non sliding pieces
  */
 
 // InitMovesTables initializes the moves tables for non-sliding pieces (Kings, Knights, Pawns).
@@ -171,4 +171,102 @@ func GetWhitePawnMoves(from Square) Bitboard {
 
 func GetBlackPawnMoves(from Square) Bitboard {
 	return calcBlackPawnMoves(from)
+}
+
+/*
+ * Sliding pieces
+ */
+
+func calcRookMoves(from Square, occupany Bitboard) Bitboard {
+	moves := Bitboard(0)
+	file := from.File()
+	rank := from.Rank()
+	// LEFT
+	for i := file + 1; i <= A; i++ {
+		newSq := uint8(rank)*8 + uint8(i)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	// RIGHT
+	for i := file - 1; i >= H; i-- {
+		newSq := uint8(rank)*8 + uint8(i)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	// UP
+	for i := rank + 1; i <= R8; i++ {
+		newSq := uint8(i)*8 + uint8(file)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	// DOWN
+	for i := rank - 1; i >= R1; i-- {
+		newSq := uint8(i)*8 + uint8(file)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	return moves
+}
+
+func calcBishopMoves(from Square, occupany Bitboard) Bitboard {
+	moves := Bitboard(0)
+	file := from.File()
+	rank := from.Rank()
+	// UP LEFT
+	for i, j := file+1, rank+1; i <= A && j <= R8; i, j = i+1, j+1 {
+		newSq := uint8(j)*8 + uint8(i)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	// UP RIGHT
+	for i, j := file-1, rank+1; i >= H && j <= R8; i, j = i-1, j+1 {
+		newSq := uint8(j)*8 + uint8(i)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	// DOWN LEFT
+	for i, j := file+1, rank-1; i <= A && j >= R1; i, j = i+1, j-1 {
+		newSq := uint8(j)*8 + uint8(i)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	// DOWN RIGHT
+	for i, j := file-1, rank-1; i >= H && j >= R1; i, j = i-1, j-1 {
+		newSq := uint8(j)*8 + uint8(i)
+		moves |= 1 << newSq
+		if occupany&(1<<newSq) != 0 {
+			break
+		}
+	}
+	return moves
+}
+
+func calcQueenMoves(from Square, occupany Bitboard) Bitboard {
+	return calcRookMoves(from, occupany) | calcBishopMoves(from, occupany)
+}
+
+func GetRookMoves(from Square, occupany Bitboard) Bitboard {
+	return calcRookMoves(from, occupany)
+}
+
+func GetBishopMoves(from Square, occupany Bitboard) Bitboard {
+	return calcBishopMoves(from, occupany)
+}
+
+func GetQueenMoves(from Square, occupany Bitboard) Bitboard {
+	return calcQueenMoves(from, occupany)
 }

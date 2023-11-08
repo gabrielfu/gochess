@@ -50,6 +50,14 @@ func (g *Game) LegalMoves() []*Move {
 				attackBb := GetBlackPawnAttacks(Square(from)) & enemyOccupied
 				moveBb := (GetBlackPawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
 				toBb = attackBb | moveBb
+			case WHITE_BISHOP, BLACK_BISHOP:
+				toBb = GetBishopMoves(Square(from), g.board.allOccupied) & allowedTos
+			case WHITE_ROOK, BLACK_ROOK:
+				toBb = GetRookMoves(Square(from), g.board.allOccupied) & allowedTos
+			case WHITE_QUEEN, BLACK_QUEEN:
+				toBb = GetQueenMoves(Square(from), g.board.allOccupied) & allowedTos
+			case WHITE_KING, BLACK_KING:
+				toBb = GetKingMoves(Square(from)) & allowedTos
 			}
 
 			// For each "to" square

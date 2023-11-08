@@ -302,6 +302,9 @@ func (b *Board) GetBbForPiece(p Piece) Bitboard {
 
 func (b *Board) Move(move *Move) error {
 	piece := b.GetPieceAtSquare(uint8(move.From))
+	if piece != move.Piece {
+		return fmt.Errorf("Piece mismatch: " + piece.Symbol() + " != " + move.Piece.Symbol())
+	}
 	switch piece {
 	case WHITE_PAWN:
 		b.whitePawns ^= 1 << move.From
@@ -309,6 +312,15 @@ func (b *Board) Move(move *Move) error {
 	case WHITE_KNIGHT:
 		b.whiteKnights ^= 1 << move.From
 		b.whiteKnights |= 1 << move.To
+	case WHITE_ROOK:
+		b.whiteRooks ^= 1 << move.From
+		b.whiteRooks |= 1 << move.To
+	case WHITE_BISHOP:
+		b.whiteBishops ^= 1 << move.From
+		b.whiteBishops |= 1 << move.To
+	case WHITE_QUEEN:
+		b.whiteQueens ^= 1 << move.From
+		b.whiteQueens |= 1 << move.To
 	case BLACK_PAWN:
 		b.blackPawns ^= 1 << move.From
 		b.blackPawns |= 1 << move.To
