@@ -18,6 +18,15 @@ func NewMove(from Square, to Square, piece Piece) *Move {
 	}
 }
 
+func NewCastlingMove(from Square, to Square, piece Piece, castle Castle) *Move {
+	return &Move{
+		from:   from,
+		to:     to,
+		piece:  piece,
+		castle: castle,
+	}
+}
+
 func (m *Move) String() string {
 	return m.Piece().Symbol() + " " + m.From().String() + " -> " + m.To().String()
 }
