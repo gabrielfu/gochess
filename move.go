@@ -5,6 +5,7 @@ type Move struct {
 	To    Square
 	Piece Piece
 
+	castle      Castle
 	validated   bool
 	isCapture   bool
 	isPromotion bool
@@ -20,6 +21,14 @@ func NewMove(from Square, to Square, piece Piece) *Move {
 
 func (m *Move) String() string {
 	return m.Piece.Symbol() + " " + m.From.String() + " -> " + m.To.String()
+}
+
+func (m *Move) Castle() Castle {
+	return m.castle
+}
+
+func (m *Move) SetCastle(castle Castle) {
+	m.castle = castle
 }
 
 func (m *Move) Validated() bool {

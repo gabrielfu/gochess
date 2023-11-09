@@ -172,21 +172,23 @@ func (sq Square) Rank() Rank {
 	return Rank(sq / 8)
 }
 
-type CastlingRights uint8
+type Castle uint8
 
 const (
-	WHITE_KING_SIDE CastlingRights = 1 << iota
+	WHITE_KING_SIDE Castle = 1 << iota
 	WHITE_QUEEN_SIDE
 	BLACK_KING_SIDE
 	BLACK_QUEEN_SIDE
 )
 
-func (c CastlingRights) HasRight(right CastlingRights) bool {
-	return c&right == right
+type CastlingRights uint8
+
+func (c CastlingRights) HasRight(right Castle) bool {
+	return uint8(c)&uint8(right) == uint8(right)
 }
 
-func (c CastlingRights) RemoveRight(right CastlingRights) CastlingRights {
-	return c &^ right
+func (c CastlingRights) RemoveRight(right Castle) CastlingRights {
+	return CastlingRights(uint8(c) &^ uint8(right))
 }
 
 // Bitboard representation of a chess board.
@@ -229,7 +231,7 @@ func NewEmptyBoard() *Board {
 		blackQueens:    0,
 		blackKing:      0,
 		turn:           WHITE,
-		castlingRights: WHITE_KING_SIDE | WHITE_QUEEN_SIDE | BLACK_KING_SIDE | BLACK_QUEEN_SIDE,
+		castlingRights: CastlingRights(WHITE_KING_SIDE | WHITE_QUEEN_SIDE | BLACK_KING_SIDE | BLACK_QUEEN_SIDE),
 		enPassant:      0,
 		whiteOccupied:  0,
 		blackOccupied:  0,
@@ -351,7 +353,44 @@ func (b *Board) GetBbForPiece(p Piece) *Bitboard {
 	}
 }
 
-func (b *Board) Move(move *Move) error {
+func (b *Board) makeCastleMove(move *Move) error {
+	var rookMove *Move
+	switch move.Castle() {
+	case WHITE_KING_SIDE:
+		rookMove = &Move{
+			From:  H1,
+			To:    F1,
+			Piece: WHITE_ROOK,
+		}
+	case WHITE_QUEEN_SIDE:
+		rookMove = &Move{
+			From:  A1,
+			To:    D1,
+			Piece: WHITE_ROOK,
+		}
+	case BLACK_KING_SIDE:
+		rookMove = &Move{
+			From:  H8,
+			To:    F8,
+			Piece: BLACK_ROOK,
+		}
+	case BLACK_QUEEN_SIDE:
+		rookMove = &Move{
+			From:  A8,
+			To:    D8,
+			Piece: BLACK_ROOK,
+		}
+	}
+	if err := b.makeMove(move); err != nil {
+		return err
+	}
+	if err := b.makeMove(rookMove); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *Board) makeMove(move *Move) error {
 	piece := b.GetPieceAtSquare(move.From)
 	if piece != move.Piece {
 		return fmt.Errorf("Piece mismatch: " + piece.Symbol() + " != " + move.Piece.Symbol())
@@ -376,6 +415,19 @@ func (b *Board) Move(move *Move) error {
 	// clear from "From" and set to "To"
 	*bb &^= (1 << move.From)
 	*bb |= (1 << move.To)
+	return nil
+}
+
+func (b *Board) Move(move *Move) error {
+	if move.Castle() != 0 {
+		if err := b.makeCastleMove(move); err != nil {
+			return err
+		}
+	} else {
+		if err := b.makeMove(move); err != nil {
+			return err
+		}
+	}
 
 	// Update occupied bitboards
 	b.UpdateOccupied()
