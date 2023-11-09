@@ -183,11 +183,11 @@ const (
 
 type CastlingRights uint8
 
-func (c CastlingRights) HasRight(right Castle) bool {
+func (c CastlingRights) Has(right Castle) bool {
 	return uint8(c)&uint8(right) == uint8(right)
 }
 
-func (c CastlingRights) RemoveRight(right Castle) CastlingRights {
+func (c CastlingRights) Remove(right Castle) CastlingRights {
 	return CastlingRights(uint8(c) &^ uint8(right))
 }
 
@@ -419,20 +419,20 @@ func (b *Board) makeMove(move *Move) error {
 
 	// remove castling right
 	if piece == WHITE_KING {
-		b.castlingRights = b.castlingRights.RemoveRight(WHITE_KING_SIDE).RemoveRight(WHITE_QUEEN_SIDE)
+		b.castlingRights = b.castlingRights.Remove(WHITE_KING_SIDE).Remove(WHITE_QUEEN_SIDE)
 	} else if piece == BLACK_KING {
-		b.castlingRights = b.castlingRights.RemoveRight(BLACK_KING_SIDE).RemoveRight(BLACK_QUEEN_SIDE)
+		b.castlingRights = b.castlingRights.Remove(BLACK_KING_SIDE).Remove(BLACK_QUEEN_SIDE)
 	} else if piece == WHITE_ROOK {
 		if move.From == A1 {
-			b.castlingRights = b.castlingRights.RemoveRight(WHITE_QUEEN_SIDE)
+			b.castlingRights = b.castlingRights.Remove(WHITE_QUEEN_SIDE)
 		} else if move.From == H1 {
-			b.castlingRights = b.castlingRights.RemoveRight(WHITE_KING_SIDE)
+			b.castlingRights = b.castlingRights.Remove(WHITE_KING_SIDE)
 		}
 	} else if piece == BLACK_ROOK {
 		if move.From == A8 {
-			b.castlingRights = b.castlingRights.RemoveRight(BLACK_QUEEN_SIDE)
+			b.castlingRights = b.castlingRights.Remove(BLACK_QUEEN_SIDE)
 		} else if move.From == H8 {
-			b.castlingRights = b.castlingRights.RemoveRight(BLACK_KING_SIDE)
+			b.castlingRights = b.castlingRights.Remove(BLACK_KING_SIDE)
 		}
 	}
 	return nil
