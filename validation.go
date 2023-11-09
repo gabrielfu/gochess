@@ -95,11 +95,17 @@ func isCastlingValid(move *Move, b *Board) bool {
 			if move.Castle() != WHITE_QUEEN_SIDE {
 				return false
 			}
+			if !b.whiteRooks.SquareIsSet(A1) {
+				return false
+			}
 			if !b.castlingRights.Has(WHITE_QUEEN_SIDE) {
 				return false
 			}
 		} else if move.To() == G1 {
 			if move.Castle() != WHITE_KING_SIDE {
+				return false
+			}
+			if !b.whiteRooks.SquareIsSet(H1) {
 				return false
 			}
 			if !b.castlingRights.Has(WHITE_KING_SIDE) {
@@ -119,11 +125,17 @@ func isCastlingValid(move *Move, b *Board) bool {
 			if move.Castle() != BLACK_QUEEN_SIDE {
 				return false
 			}
+			if !b.whiteRooks.SquareIsSet(A8) {
+				return false
+			}
 			if !b.castlingRights.Has(BLACK_QUEEN_SIDE) {
 				return false
 			}
 		} else if move.To() == G8 {
 			if move.Castle() != BLACK_KING_SIDE {
+				return false
+			}
+			if !b.whiteRooks.SquareIsSet(H8) {
 				return false
 			}
 			if !b.castlingRights.Has(BLACK_KING_SIDE) {
@@ -132,6 +144,8 @@ func isCastlingValid(move *Move, b *Board) bool {
 		} else {
 			return false
 		}
+	} else {
+		return false
 	}
 
 	if !isCastlingPathClear(move.From(), move.To(), b) {

@@ -39,6 +39,33 @@ func TestIsCastlingValid(t *testing.T) {
 	}
 
 	var cpy *Board
+	cpy = NewEmptyBoard()
+	b.AddPieceToSquare(WHITE_KING, E1)
+	if isCastlingValid(NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE), cpy) {
+		t.Errorf("Castling should be invalid without rook")
+	}
+
+	cpy = NewEmptyBoard()
+	cpy.AddPieceToSquare(WHITE_ROOK, A1)
+	cpy.AddPieceToSquare(WHITE_KING, D1)
+	if isCastlingValid(NewCastlingMove(D1, C1, WHITE_KING, WHITE_QUEEN_SIDE), cpy) {
+		t.Errorf("Castling should be invalid from incorrect position")
+	}
+
+	cpy = NewEmptyBoard()
+	cpy.AddPieceToSquare(WHITE_ROOK, B1)
+	cpy.AddPieceToSquare(WHITE_KING, E1)
+	if isCastlingValid(NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE), cpy) {
+		t.Errorf("Castling should be invalid from incorrect position")
+	}
+
+	cpy = NewEmptyBoard()
+	cpy.AddPieceToSquare(WHITE_ROOK, A1)
+	cpy.AddPieceToSquare(WHITE_QUEEN, E1)
+	if isCastlingValid(NewCastlingMove(E1, C1, WHITE_QUEEN, WHITE_QUEEN_SIDE), cpy) {
+		t.Errorf("Castling should be invalid for non-king piece")
+	}
+
 	cpy = b.Copy()
 	cpy.Move(NewMove(E1, D1, WHITE_KING))
 	cpy.Move(NewMove(D1, E1, WHITE_KING))
