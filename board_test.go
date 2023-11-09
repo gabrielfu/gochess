@@ -98,3 +98,45 @@ func TestMoveWithCapture(t *testing.T) {
 		t.Errorf("Expected 0, got %v", b.blackRooks)
 	}
 }
+
+func TestStandardPosition(t *testing.T) {
+	b := NewStartingBoard()
+	mapping := map[Square]Piece{
+		A1: WHITE_ROOK,
+		B1: WHITE_KNIGHT,
+		C1: WHITE_BISHOP,
+		D1: WHITE_QUEEN,
+		E1: WHITE_KING,
+		F1: WHITE_BISHOP,
+		G1: WHITE_KNIGHT,
+		H1: WHITE_ROOK,
+		A8: BLACK_ROOK,
+		B8: BLACK_KNIGHT,
+		C8: BLACK_BISHOP,
+		D8: BLACK_QUEEN,
+		E8: BLACK_KING,
+		F8: BLACK_BISHOP,
+		G8: BLACK_KNIGHT,
+		H8: BLACK_ROOK,
+	}
+	for square, piece := range mapping {
+		if b.GetPieceAtSquare(square) != piece {
+			t.Errorf("Expected %v at Square %v, got %v", piece.Symbol(), square, b.GetPieceAtSquare(square).Symbol())
+		}
+	}
+	for _, square := range []Square{H2, G2, F2, E2, D2, C2, B2, A2} {
+		if b.GetPieceAtSquare(square) != WHITE_PAWN {
+			t.Errorf("Expected %v at Square %v, got %v", WHITE_PAWN.Symbol(), square, b.GetPieceAtSquare(square).Symbol())
+		}
+	}
+	for _, square := range []Square{H7, G7, F7, E7, D7, C7, B7, A7} {
+		if b.GetPieceAtSquare(square) != BLACK_PAWN {
+			t.Errorf("Expected %v at Square %v, got %v", BLACK_PAWN.Symbol(), square, b.GetPieceAtSquare(square).Symbol())
+		}
+	}
+	for square := H3; square <= A6; square++ {
+		if b.GetPieceAtSquare(square) != EMPTY {
+			t.Errorf("Expected %v at Square %v, got %v", EMPTY.Symbol(), square, b.GetPieceAtSquare(square).Symbol())
+		}
+	}
+}
