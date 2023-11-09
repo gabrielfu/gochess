@@ -3,37 +3,37 @@ package chessago
 type Color uint8
 
 const (
-	WHITE Color = 0b0
-	BLACK Color = 0b1
+	WHITE Color = iota
+	BLACK
 )
 
 type PieceType uint8
 
 const (
-	PAWN   PieceType = 0b0010
-	KNIGHT PieceType = 0b0100
-	BISHOP PieceType = 0b0110
-	ROOK   PieceType = 0b1000
-	QUEEN  PieceType = 0b1010
-	KING   PieceType = 0b1100
+	PAWN PieceType = iota
+	KNIGHT
+	BISHOP
+	ROOK
+	QUEEN
+	KING
 )
 
 type Piece uint8
 
 const (
-	WHITE_PAWN   Piece = Piece(uint8(WHITE) | uint8(PAWN))
-	WHITE_KNIGHT Piece = Piece(uint8(WHITE) | uint8(KNIGHT))
-	WHITE_BISHOP Piece = Piece(uint8(WHITE) | uint8(BISHOP))
-	WHITE_ROOK   Piece = Piece(uint8(WHITE) | uint8(ROOK))
-	WHITE_QUEEN  Piece = Piece(uint8(WHITE) | uint8(QUEEN))
-	WHITE_KING   Piece = Piece(uint8(WHITE) | uint8(KING))
-	BLACK_PAWN   Piece = Piece(uint8(BLACK) | uint8(PAWN))
-	BLACK_KNIGHT Piece = Piece(uint8(BLACK) | uint8(KNIGHT))
-	BLACK_BISHOP Piece = Piece(uint8(BLACK) | uint8(BISHOP))
-	BLACK_ROOK   Piece = Piece(uint8(BLACK) | uint8(ROOK))
-	BLACK_QUEEN  Piece = Piece(uint8(BLACK) | uint8(QUEEN))
-	BLACK_KING   Piece = Piece(uint8(BLACK) | uint8(KING))
-	EMPTY        Piece = 0
+	WHITE_PAWN Piece = iota
+	WHITE_KNIGHT
+	WHITE_BISHOP
+	WHITE_ROOK
+	WHITE_QUEEN
+	WHITE_KING
+	BLACK_PAWN
+	BLACK_KNIGHT
+	BLACK_BISHOP
+	BLACK_ROOK
+	BLACK_QUEEN
+	BLACK_KING
+	EMPTY
 )
 
 var WHITE_PIECES = []Piece{
@@ -66,6 +66,14 @@ func (p Piece) Color() Color {
 	}
 }
 
+func (p Piece) PieceType() PieceType {
+	return PieceType(uint8(p) % 6)
+}
+
 func (p Piece) Symbol() string {
-	return SYMBOLS[p>>1-1]
+	return SYMBOLS[p]
+}
+
+func PieceFromTypeColor(pieceType PieceType, color Color) Piece {
+	return Piece(uint8(pieceType) + uint8(color)*6)
 }
