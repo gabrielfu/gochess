@@ -99,7 +99,7 @@ func TestMoveWithCapture(t *testing.T) {
 	}
 }
 
-func TestStandardPosition(t *testing.T) {
+func TestStartingPosition(t *testing.T) {
 	b := NewStartingBoard()
 	mapping := map[Square]Piece{
 		A1: WHITE_ROOK,
