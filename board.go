@@ -391,6 +391,7 @@ func (b *Board) makeCastleMove(move *Move) error {
 }
 
 func (b *Board) makeMove(move *Move) error {
+	// move this to validation
 	piece := b.GetPieceAtSquare(move.From)
 	if piece != move.Piece {
 		return fmt.Errorf("Piece mismatch: " + piece.Symbol() + " != " + move.Piece.Symbol())
@@ -401,7 +402,7 @@ func (b *Board) makeMove(move *Move) error {
 		return fmt.Errorf("No piece at square: " + move.From.String())
 	}
 
-	// Capture target
+	// capture target
 	target := b.GetPieceAtSquare(move.To)
 	if target != EMPTY {
 		targetBb := b.GetBbForPiece(target)
@@ -411,10 +412,29 @@ func (b *Board) makeMove(move *Move) error {
 		*targetBb &^= (1 << move.To)
 	}
 
-	// Move the piece
+	// move the piece
 	// clear from "From" and set to "To"
 	*bb &^= (1 << move.From)
 	*bb |= (1 << move.To)
+
+	// remove castling right
+	if piece == WHITE_KING {
+		b.castlingRights = b.castlingRights.RemoveRight(WHITE_KING_SIDE).RemoveRight(WHITE_QUEEN_SIDE)
+	} else if piece == BLACK_KING {
+		b.castlingRights = b.castlingRights.RemoveRight(BLACK_KING_SIDE).RemoveRight(BLACK_QUEEN_SIDE)
+	} else if piece == WHITE_ROOK {
+		if move.From == A1 {
+			b.castlingRights = b.castlingRights.RemoveRight(WHITE_QUEEN_SIDE)
+		} else if move.From == H1 {
+			b.castlingRights = b.castlingRights.RemoveRight(WHITE_KING_SIDE)
+		}
+	} else if piece == BLACK_ROOK {
+		if move.From == A8 {
+			b.castlingRights = b.castlingRights.RemoveRight(BLACK_QUEEN_SIDE)
+		} else if move.From == H8 {
+			b.castlingRights = b.castlingRights.RemoveRight(BLACK_KING_SIDE)
+		}
+	}
 	return nil
 }
 
