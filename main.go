@@ -1,5 +1,7 @@
 package chessago
 
+import "fmt"
+
 func Main() {
 	// captures
 	// sliding pieces
@@ -59,24 +61,57 @@ func Main() {
 
 	g := NewGame()
 	var err error
+
+	b := NewEmptyBoard()
+	b.AddPieceToSquare(WHITE_ROOK, A1)
+	b.AddPieceToSquare(WHITE_KING, E1)
+	b.AddPieceToSquare(WHITE_ROOK, H1)
+	g.SetBoard(b)
+
+	legalMoves := g.LegalMoves()
+	for _, move := range legalMoves {
+		fmt.Println(move)
+		cpy := b.Copy()
+		cpy.Move(move)
+		println(cpy.Visualize())
+		println("=====================================")
+	}
+	println(len(legalMoves), "moves")
+	return
+
+	println(g.Visualize())
+	println(g.board.castlingRights)
+
 	if err = g.Move(&Move{
-		From:  D2,
-		To:    D4,
-		Piece: WHITE_PAWN,
+		from:   E1,
+		to:     C1,
+		piece:  WHITE_KING,
+		castle: WHITE_QUEEN_SIDE,
+	}); err != nil {
+		panic(err)
+	}
+	println(g.Visualize())
+	println(g.board.castlingRights)
+	return
+
+	if err = g.Move(&Move{
+		from:  D2,
+		to:    D4,
+		piece: WHITE_PAWN,
 	}); err != nil {
 		panic(err)
 	}
 	if err = g.Move(&Move{
-		From:  E7,
-		To:    E5,
-		Piece: BLACK_PAWN,
+		from:  E7,
+		to:    E5,
+		piece: BLACK_PAWN,
 	}); err != nil {
 		panic(err)
 	}
 	if err = g.Move(&Move{
-		From:  D4,
-		To:    E5,
-		Piece: WHITE_PAWN,
+		from:  D4,
+		to:    E5,
+		piece: WHITE_PAWN,
 	}); err != nil {
 		panic(err)
 	}

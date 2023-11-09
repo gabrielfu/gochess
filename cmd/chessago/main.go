@@ -16,11 +16,11 @@ func main() {
 
 	g := chessago.NewGame()
 	moves := []*chessago.Move{
-		{From: chessago.D2, To: chessago.D4, Piece: chessago.WHITE_PAWN},
-		{From: chessago.E7, To: chessago.E5, Piece: chessago.BLACK_PAWN},
-		{From: chessago.D4, To: chessago.E5, Piece: chessago.WHITE_PAWN},
-		{From: chessago.D7, To: chessago.D5, Piece: chessago.BLACK_PAWN},
-		{From: chessago.E5, To: chessago.E6, Piece: chessago.WHITE_PAWN},
+		chessago.NewMove(chessago.D2, chessago.D4, chessago.WHITE_PAWN),
+		chessago.NewMove(chessago.E7, chessago.E5, chessago.BLACK_PAWN),
+		chessago.NewMove(chessago.D4, chessago.E5, chessago.WHITE_PAWN),
+		chessago.NewMove(chessago.D7, chessago.D5, chessago.BLACK_PAWN),
+		chessago.NewMove(chessago.E5, chessago.E6, chessago.WHITE_PAWN),
 	}
 
 	var i = 0
