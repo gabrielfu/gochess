@@ -447,6 +447,7 @@ func (b *Board) makeMove(move *Move) error {
 	*bb |= (1 << move.To())
 
 	// remove castling right
+	// TODO: remove castling right if rook is captured
 	if piece == WHITE_KING {
 		b.castlingRights = b.castlingRights.Remove(WHITE_KING_SIDE).Remove(WHITE_QUEEN_SIDE)
 	} else if piece == BLACK_KING {
