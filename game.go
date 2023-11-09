@@ -72,6 +72,44 @@ func (g *Game) LegalMoves() []*Move {
 					Piece: p,
 				})
 			}
+
+			// castling
+			if p == WHITE_KING && from == E1 {
+				if g.board.castlingRights.Has(WHITE_QUEEN_SIDE) {
+					// TODO: check castling path condition
+					moves = append(moves, &Move{
+						From:   E1,
+						To:     C1,
+						Piece:  WHITE_KING,
+						castle: WHITE_QUEEN_SIDE,
+					})
+				}
+				if g.board.castlingRights.Has(WHITE_KING_SIDE) {
+					moves = append(moves, &Move{
+						From:   E1,
+						To:     G1,
+						Piece:  WHITE_KING,
+						castle: WHITE_KING_SIDE,
+					})
+				}
+			} else if p == BLACK_KING && from == E8 {
+				if g.board.castlingRights.Has(BLACK_QUEEN_SIDE) {
+					moves = append(moves, &Move{
+						From:   E8,
+						To:     C8,
+						Piece:  BLACK_KING,
+						castle: BLACK_QUEEN_SIDE,
+					})
+				}
+				if g.board.castlingRights.Has(BLACK_KING_SIDE) {
+					moves = append(moves, &Move{
+						From:   E8,
+						To:     G8,
+						Piece:  BLACK_KING,
+						castle: BLACK_KING_SIDE,
+					})
+				}
+			}
 		}
 	}
 	return moves

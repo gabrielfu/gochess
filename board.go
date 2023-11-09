@@ -1,6 +1,8 @@
 package chessago
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Bitboard uint64
 
@@ -264,6 +266,29 @@ func NewStartingBoard() *Board {
 		whiteOccupied:  0x000000000000ffff,
 		blackOccupied:  0xffff000000000000,
 		allOccupied:    0xffff00000000ffff,
+	}
+}
+
+func (b *Board) Copy() *Board {
+	return &Board{
+		whitePawns:     b.whitePawns,
+		whiteKnights:   b.whiteKnights,
+		whiteBishops:   b.whiteBishops,
+		whiteRooks:     b.whiteRooks,
+		whiteQueens:    b.whiteQueens,
+		whiteKing:      b.whiteKing,
+		blackPawns:     b.blackPawns,
+		blackKnights:   b.blackKnights,
+		blackBishops:   b.blackBishops,
+		blackRooks:     b.blackRooks,
+		blackQueens:    b.blackQueens,
+		blackKing:      b.blackKing,
+		turn:           b.turn,
+		castlingRights: b.castlingRights,
+		enPassant:      b.enPassant,
+		whiteOccupied:  b.whiteOccupied,
+		blackOccupied:  b.blackOccupied,
+		allOccupied:    b.allOccupied,
 	}
 }
 
