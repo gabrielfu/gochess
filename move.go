@@ -1,4 +1,4 @@
-package main
+package chessago
 
 type Move struct {
 	From  Square

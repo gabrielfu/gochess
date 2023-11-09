@@ -1,4 +1,4 @@
-package main
+package chessago
 
 type Game struct {
 	board *Board
@@ -75,6 +75,10 @@ func (g *Game) LegalMoves() []*Move {
 		}
 	}
 	return moves
+}
+
+func (g *Game) Visualize() string {
+	return g.board.Visualize()
 }
 
 // Move executes the given move on the board.

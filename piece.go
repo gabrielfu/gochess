@@ -1,4 +1,4 @@
-package main
+package chessago
 
 type Color uint8
 

@@ -1,13 +1,14 @@
-package main
+package chessago
 
-import "fmt"
-
-func main() {
-	// TODO: captures
-	// TODO: sliding pieces
+func Main() {
+	// captures
+	// sliding pieces
 	// TODO: castling
 	// TODO: en passant
 	// TODO: promotion
+
+	// TODO: evaluation
+	// TODO: search
 
 	// TODO: move validation
 	// TODO: check detection
@@ -18,7 +19,7 @@ func main() {
 	// TODO: FEN parsing
 	// TODO: PGN parsing
 
-	// board := NewBoard()
+	// board := NewStartingBoard()
 	// board.Print()
 	// println("=====================================")
 
@@ -35,7 +36,7 @@ func main() {
 	// println(dest.BinaryBoard())
 	// println("=====================================")
 
-	// b := NewBoard()
+	// b := NewStartingBoard()
 	// b.Move(&Move{
 	// 	From:  E1,
 	// 	To:    F5,
@@ -80,15 +81,16 @@ func main() {
 		panic(err)
 	}
 	println(g.board.Visualize())
-	legalMoves := g.LegalMoves()
-	for _, move := range legalMoves {
-		fmt.Println(move)
-		// board := NewBoard()
-		// board.Move(move)
-		// board.Print()
-		println("=====================================")
-	}
-	println(len(legalMoves))
+	println(g.board.blackPawns.BinaryBoard())
+	// legalMoves := g.LegalMoves()
+	// for _, move := range legalMoves {
+	// 	fmt.Println(move)
+	// 	// board := NewStartingBoard()
+	// 	// board.Move(move)
+	// 	// board.Print()
+	// 	println("=====================================")
+	// }
+	// println(len(legalMoves))
 
 	// var squares = []SQUARES{A1, A2, D1, E1, H7, G8}
 	// var expected = []PIECES{WHITE_ROOK, WHITE_PAWN, WHITE_KING, WHITE_QUEEN, BLACK_PAWN, BLACK_KNIGHT}
