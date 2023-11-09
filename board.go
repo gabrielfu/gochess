@@ -172,6 +172,23 @@ func (sq Square) Rank() Rank {
 	return Rank(sq / 8)
 }
 
+type CastlingRights uint8
+
+const (
+	WHITE_KING_SIDE CastlingRights = 1 << iota
+	WHITE_QUEEN_SIDE
+	BLACK_KING_SIDE
+	BLACK_QUEEN_SIDE
+)
+
+func (c CastlingRights) HasRight(right CastlingRights) bool {
+	return c&right == right
+}
+
+func (c CastlingRights) RemoveRight(right CastlingRights) CastlingRights {
+	return c &^ right
+}
+
 // Bitboard representation of a chess board.
 type Board struct {
 	whitePawns   Bitboard
@@ -188,7 +205,7 @@ type Board struct {
 	blackKing    Bitboard
 
 	turn           Color
-	castlingRights uint8
+	castlingRights CastlingRights
 	enPassant      uint8
 
 	whiteOccupied Bitboard
@@ -212,7 +229,7 @@ func NewEmptyBoard() *Board {
 		blackQueens:    0,
 		blackKing:      0,
 		turn:           WHITE,
-		castlingRights: 0,
+		castlingRights: WHITE_KING_SIDE | WHITE_QUEEN_SIDE | BLACK_KING_SIDE | BLACK_QUEEN_SIDE,
 		enPassant:      0,
 		whiteOccupied:  0,
 		blackOccupied:  0,
