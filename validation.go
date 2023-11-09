@@ -211,6 +211,8 @@ func isMoveValid(move *Move, b *Board) bool {
 	if move.Castle() != 0 {
 		return isCastlingValid(move, b)
 	}
-	// TODO
+	// TODO: is movable
+	// TODO: next move must not be in check
+	// TODO: is legal move
 	return true
 }
