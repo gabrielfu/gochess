@@ -35,6 +35,10 @@ func (g *Game) Visualize() string {
 	return g.Board().Visualize()
 }
 
+func (g *Game) VisualizeFlipped() string {
+	return g.Board().VisualizeFlipped()
+}
+
 // Move executes the given move on the board.
 func (g *Game) Move(move *Move) error {
 	san := move.ToSAN(g.Board())

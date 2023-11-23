@@ -343,6 +343,22 @@ func (b *Board) Visualize() string {
 	return out
 }
 
+func (b *Board) VisualizeFlipped() string {
+	out := ""
+	for i := 0; i < 64; i++ {
+		if i%8 == 0 {
+			out += fmt.Sprint(i/8+1) + " "
+		}
+		piece := b.GetPieceAtSquare(Square(i))
+		out += piece.Symbol() + " "
+		if i%8 == 7 {
+			out += "\n"
+		}
+	}
+	out += "  h g f e d c b a"
+	return out
+}
+
 // GetPieceAtSquare returns the piece at the given square (0-63).
 func (b *Board) GetPieceAtSquare(square Square) Piece {
 	var mask Bitboard = 1 << square

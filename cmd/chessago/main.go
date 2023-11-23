@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 
@@ -11,6 +12,9 @@ import (
 )
 
 func main() {
+	flip := flag.Bool("flip", false, "flip the board at Black's turn")
+	flag.Parse()
+
 	screen.Clear()
 	reader := bufio.NewReader(os.Stdin)
 	var errMsg string
@@ -21,7 +25,11 @@ func main() {
 	for {
 		screen.Clear()
 		screen.MoveTopLeft()
-		fmt.Println(g.Visualize())
+		if *flip && g.Board().Turn() == chessago.BLACK {
+			fmt.Println(g.VisualizeFlipped())
+		} else {
+			fmt.Println(g.Visualize())
+		}
 		fmt.Println()
 		fmt.Println(g.PGN())
 		fmt.Printf("\033[0;31m%s\033[0;39m\n", errMsg)
