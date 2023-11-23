@@ -30,8 +30,9 @@ func Main() {
 	b.AddPieceToSquare(WHITE_KNIGHT, G1)
 	b.AddPieceToSquare(WHITE_PAWN, B7)
 	b.AddPieceToSquare(BLACK_ROOK, C4)
-	b.AddPieceToSquare(WHITE_ROOK, C1)
+	b.AddPieceToSquare(WHITE_ROOK, C2)
 	b.AddPieceToSquare(WHITE_ROOK, A4)
+	b.AddPieceToSquare(WHITE_ROOK, A1)
 
 	g := NewGame()
 	g.SetBoard(b)
@@ -39,7 +40,7 @@ func Main() {
 	fmt.Println(g.Visualize())
 	fmt.Println("=====================")
 
-	sans := []string{"d5", "b8Q", "b8=Q", "dxe5", "Nh3", "Nf3", "Ng1f3", "Na6b8", "Ngf3", "N1f3", "Nxc4", "Rxc4", "R1xc4", "Raxc4", "Ra4xc4"}
+	sans := []string{"O-O", "O-O-O", "d5", "b8Q", "b8=Q", "dxe5", "Nh3", "Nf3", "Ng1f3", "Na6b8", "Ngf3", "N1f3", "Nxc4", "Rxc4", "R1xc4", "Raxc4", "Ra4xc4"}
 	for _, san := range sans {
 		print(san, "\t")
 		move, err := parseSAN(san, g.Board())

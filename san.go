@@ -17,10 +17,20 @@ var sanToPieceType = map[string]PieceType{
 
 func parseSAN(san string, b *Board) (*Move, error) {
 	if san == "0-0" || san == "O-O" || san == "o-o" {
-		return NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE), nil
+		move := NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE)
+		if isCastlingValid(move, b) {
+			return move, nil
+		} else {
+			return nil, fmt.Errorf("Invalid SAN: " + san)
+		}
 	}
 	if san == "0-0-0" || san == "O-O-O" || san == "o-o-o" {
-		return NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE), nil
+		move := NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE)
+		if isCastlingValid(move, b) {
+			return move, nil
+		} else {
+			return nil, fmt.Errorf("Invalid SAN: " + san)
+		}
 	}
 
 	// cases
