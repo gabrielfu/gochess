@@ -310,12 +310,16 @@ func (b *Board) UpdateOccupied() {
 func (b *Board) Visualize() string {
 	out := ""
 	for i := 63; i >= 0; i-- {
+		if i%8 == 7 {
+			out += fmt.Sprint(i/8+1) + " "
+		}
 		piece := b.GetPieceAtSquare(Square(i))
-		out += piece.Symbol()
+		out += piece.Symbol() + " "
 		if i%8 == 0 {
 			out += "\n"
 		}
 	}
+	out += "  a b c d e f g h"
 	return out
 }
 
