@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"chessago"
+	gochess "gochess/internal"
 
 	"github.com/inancgumus/screen"
 )
@@ -19,13 +19,13 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 	var errMsg string
 
-	g := chessago.NewGame()
+	g := gochess.NewGame()
 
 	var i = 0
 	for {
 		screen.Clear()
 		screen.MoveTopLeft()
-		if *flip && g.Board().Turn() == chessago.BLACK {
+		if *flip && g.Board().Turn() == gochess.BLACK {
 			fmt.Println(g.VisualizeFlipped())
 		} else {
 			fmt.Println(g.Visualize())
@@ -48,7 +48,7 @@ func main() {
 		}
 		input = input[:len(input)-1]
 
-		move, err := chessago.ParseSAN(input, g.Board())
+		move, err := gochess.ParseSAN(input, g.Board())
 		if err != nil {
 			errMsg = err.Error()
 			continue

@@ -1,4 +1,4 @@
-module chessago
+module gochess
 
 go 1.21.1
 

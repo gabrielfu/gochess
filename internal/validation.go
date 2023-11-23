@@ -1,4 +1,4 @@
-package chessago
+package gochess
 
 // isSquareAttacked returns true if the square is being attacked by the opponent
 func isSquareAttacked(sq Square, b *Board) bool {

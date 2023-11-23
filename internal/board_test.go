@@ -1,4 +1,4 @@
-package chessago
+package gochess
 
 import (
 	"testing"

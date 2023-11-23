@@ -1,4 +1,4 @@
-package chessago
+package gochess
 
 var KingMovesTable [64]Bitboard
 var KnightMovesTable [64]Bitboard

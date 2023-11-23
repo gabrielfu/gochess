@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"chessago"
+	gochess "gochess/internal"
 
 	"github.com/inancgumus/screen"
 )
@@ -14,13 +14,13 @@ func main() {
 	screen.Clear()
 	reader := bufio.NewReader(os.Stdin)
 
-	g := chessago.NewGame()
-	moves := []*chessago.Move{
-		chessago.NewMove(chessago.D2, chessago.D4, chessago.WHITE_PAWN),
-		chessago.NewMove(chessago.E7, chessago.E5, chessago.BLACK_PAWN),
-		chessago.NewMove(chessago.D4, chessago.E5, chessago.WHITE_PAWN),
-		chessago.NewMove(chessago.D7, chessago.D5, chessago.BLACK_PAWN),
-		chessago.NewMove(chessago.E5, chessago.E6, chessago.WHITE_PAWN),
+	g := gochess.NewGame()
+	moves := []*gochess.Move{
+		gochess.NewMove(gochess.D2, gochess.D4, gochess.WHITE_PAWN),
+		gochess.NewMove(gochess.E7, gochess.E5, gochess.BLACK_PAWN),
+		gochess.NewMove(gochess.D4, gochess.E5, gochess.WHITE_PAWN),
+		gochess.NewMove(gochess.D7, gochess.D5, gochess.BLACK_PAWN),
+		gochess.NewMove(gochess.E5, gochess.E6, gochess.WHITE_PAWN),
 	}
 
 	var i = 0

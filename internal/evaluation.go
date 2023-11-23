@@ -1,4 +1,4 @@
-package chessago
+package gochess
 
 var BaseValues = map[Piece]int{
 	WHITE_PAWN:   100,
