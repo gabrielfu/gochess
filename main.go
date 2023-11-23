@@ -21,16 +21,25 @@ func Main() {
 	// TODO: FEN parsing
 	// TODO: PGN parsing
 
+	b := NewEmptyBoard()
+	b.AddPieceToSquare(WHITE_KING, E1)
+	b.AddPieceToSquare(BLACK_KING, E8)
+	b.AddPieceToSquare(WHITE_PAWN, D4)
+	b.AddPieceToSquare(BLACK_PAWN, E5)
+	b.AddPieceToSquare(WHITE_KNIGHT, D2)
+	b.AddPieceToSquare(WHITE_KNIGHT, G1)
+	b.AddPieceToSquare(WHITE_PAWN, B7)
+	b.AddPieceToSquare(BLACK_ROOK, C4)
+	b.AddPieceToSquare(WHITE_ROOK, C1)
+	b.AddPieceToSquare(WHITE_ROOK, A4)
+
 	g := NewGame()
-	g.Move(NewMove(D2, D4, WHITE_PAWN))
-	g.Move(NewMove(E7, E5, BLACK_PAWN))
-	g.Move(NewMove(B1, D2, WHITE_KNIGHT))
-	g.Move(NewMove(H8, H3, BLACK_ROOK))
+	g.SetBoard(b)
 	fmt.Println("Current board:")
 	fmt.Println(g.Visualize())
 	fmt.Println("=====================")
 
-	sans := []string{"d5", "d8Q", "d8=Q", "dxe5", "Nf3", "Ng1f3", "Ngf3", "N1f3", "Nxf3", "Ngxf3", "N1xf3", "Ng1xf3"}
+	sans := []string{"d5", "b8Q", "b8=Q", "dxe5", "Nh3", "Nf3", "Ng1f3", "Na6b8", "Ngf3", "N1f3", "Nxc4", "Rxc4", "R1xc4", "Raxc4", "Ra4xc4"}
 	for _, san := range sans {
 		print(san, "\t")
 		move, err := parseSAN(san, g.Board())

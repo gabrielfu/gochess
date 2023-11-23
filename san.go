@@ -67,24 +67,24 @@ func parseSAN(san string, b *Board) (*Move, error) {
 		toRank = matches[3]
 	} else
 
-	// parse piece moves (Ngh4)
-	if matches = regexp.MustCompile(`^([RNBQ])?([a-h])([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
+	// parse piece moves with & without capture (Ngh4, Ngxh4)
+	if matches = regexp.MustCompile(`^([RNBQ])?([a-h])x?([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
 		pieceType = matches[1]
 		fromFile = matches[2]
 		toFile = matches[3]
 		toRank = matches[4]
 	} else
 
-	// parse piece moves (N2h4)
-	if matches = regexp.MustCompile(`^([RNBQ])?([1-8])([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
+	// parse piece moves with & without capture (N2h4, N2xh4)
+	if matches = regexp.MustCompile(`^([RNBQ])?([1-8])x?([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
 		pieceType = matches[1]
 		fromRank = matches[2]
 		toFile = matches[3]
 		toRank = matches[4]
 	} else
 
-	// parse piece moves (Ngh4)
-	if matches = regexp.MustCompile(`^([RNBQ])?([a-h])([1-8])([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
+	// parse piece moves with & without capture (Ng2h4, Ng2xh4)
+	if matches = regexp.MustCompile(`^([RNBQ])?([a-h])([1-8])x?([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
 		pieceType = matches[1]
 		fromFile = matches[2]
 		fromRank = matches[3]
