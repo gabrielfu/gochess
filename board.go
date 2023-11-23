@@ -511,6 +511,20 @@ func (b *Board) Move(move *Move) error {
 	return nil
 }
 
+func (b *Board) IsInCheck() bool {
+	if b.Turn() == WHITE {
+		return isSquareAttacked(b.whiteKing.Squares()[0], b)
+	}
+	return isSquareAttacked(b.blackKing.Squares()[0], b)
+}
+
+func (b *Board) IsInCheckmate() bool {
+	if !b.IsInCheck() {
+		return false
+	}
+	return len(b.LegalMoves()) == 0
+}
+
 // LegalMoves returns all legal moves for the current player and specified candidate pieces.
 func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 	var allowedTos Bitboard
@@ -614,10 +628,7 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 		}
 		// go back to original turn
 		cpy.turn = 1 - cpy.turn
-		if cpy.Turn() == WHITE {
-			return !isSquareAttacked(cpy.whiteKing.Squares()[0], cpy)
-		}
-		return !isSquareAttacked(cpy.blackKing.Squares()[0], cpy)
+		return !cpy.IsInCheck()
 	})
 	return moves
 }

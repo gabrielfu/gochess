@@ -25,6 +25,9 @@ var pieceTypeToSAN = map[PieceType]string{
 }
 
 func ParseSAN(san string, b *Board) (*Move, error) {
+	// remove check and mate and brilliant symbols
+	san = regexp.MustCompile(`([+#]?[!?]{0,2})$`).ReplaceAllString(san, "")
+
 	if san == "0-0" || san == "O-O" || san == "o-o" {
 		move := NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE)
 		if isCastlingValid(move, b) {
@@ -209,5 +212,15 @@ func (m *Move) ToSAN(b *Board) string {
 	if m.Promotion() != EMPTY {
 		san += "=" + pieceTypeToSAN[m.Promotion().PieceType()]
 	}
+
+	// add check and mate
+	cpy := b.Copy()
+	cpy.Move(m)
+	if cpy.IsInCheckmate() {
+		san += "#"
+	} else if cpy.IsInCheck() {
+		san += "+"
+	}
+
 	return san
 }
