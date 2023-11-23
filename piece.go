@@ -7,6 +7,14 @@ const (
 	BLACK
 )
 
+func (c Color) String() string {
+	if c == WHITE {
+		return "White"
+	} else {
+		return "Black"
+	}
+}
+
 type PieceType uint8
 
 const (

@@ -32,6 +32,13 @@ func main() {
 		}
 		fmt.Println()
 		fmt.Println(g.PGN())
+
+		if g.Board().IsInCheckmate() {
+			winner := 1 - g.Turn()
+			fmt.Printf("\033[0;32mGame over! %s won.\033[0;39m\n", winner)
+			break
+		}
+
 		fmt.Printf("\033[0;31m%s\033[0;39m\n", errMsg)
 		fmt.Print("Your move: ")
 
@@ -56,4 +63,7 @@ func main() {
 		errMsg = ""
 		i++
 	}
+
+	fmt.Print("Press Enter key to exit...")
+	reader.ReadByte()
 }
