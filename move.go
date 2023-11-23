@@ -13,6 +13,7 @@ func NewMove(from Square, to Square, piece Piece) *Move {
 		from:      from,
 		to:        to,
 		piece:     piece,
+		castle:    0,
 		promotion: EMPTY,
 	}
 }

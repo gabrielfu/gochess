@@ -13,27 +13,40 @@ import (
 func main() {
 	screen.Clear()
 	reader := bufio.NewReader(os.Stdin)
+	var history string
+	var message string
 
 	g := chessago.NewGame()
-	moves := []*chessago.Move{
-		chessago.NewMove(chessago.D2, chessago.D4, chessago.WHITE_PAWN),
-		chessago.NewMove(chessago.E7, chessago.E5, chessago.BLACK_PAWN),
-		chessago.NewMove(chessago.D4, chessago.E5, chessago.WHITE_PAWN),
-		chessago.NewMove(chessago.D7, chessago.D5, chessago.BLACK_PAWN),
-		chessago.NewMove(chessago.E5, chessago.E6, chessago.WHITE_PAWN),
-	}
 
 	var i = 0
-	for i < len(moves) {
+	for {
+		screen.Clear()
 		screen.MoveTopLeft()
 		fmt.Println(g.Visualize())
-		reader.ReadString('\n')
+		fmt.Println()
+		fmt.Println(history)
+		fmt.Println(message)
+		fmt.Print("Your move: ")
 
-		move := moves[i]
-		if err := g.Move(move); err != nil {
-			panic(err)
+		input, err := reader.ReadString('\n')
+		if err != nil {
+			message = "Error reading input: " + err.Error()
+			continue
 		}
-		g.Move(move)
+		input = input[:len(input)-1]
+
+		move, err := chessago.ParseSAN(input, g.Board())
+		if err != nil {
+			message = err.Error()
+			continue
+		}
+		if err := g.Move(move); err != nil {
+			message = err.Error()
+			continue
+		}
+		history += fmt.Sprintf("%d. %s ", i/2+1, input)
+		// reset message
+		message = ""
 		i++
 	}
 }

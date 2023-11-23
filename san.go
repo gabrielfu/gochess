@@ -15,7 +15,7 @@ var sanToPieceType = map[string]PieceType{
 	"K": KING,
 }
 
-func parseSAN(san string, b *Board) (*Move, error) {
+func ParseSAN(san string, b *Board) (*Move, error) {
 	if san == "0-0" || san == "O-O" || san == "o-o" {
 		move := NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE)
 		if isCastlingValid(move, b) {
