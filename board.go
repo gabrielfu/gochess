@@ -505,6 +505,17 @@ func (b *Board) makeMove(move *Move) error {
 			b.castlingRights = b.castlingRights.Remove(BLACK_KING_SIDE)
 		}
 	}
+
+	// promotion
+	if move.Promotion() != EMPTY {
+		*bb &^= (1 << move.To())
+		promoBb := b.GetBbForPiece(move.Promotion())
+		if promoBb == nil {
+			return fmt.Errorf("Invalid promotion piece: " + move.Promotion().Symbol())
+		}
+		*promoBb |= (1 << move.To())
+	}
+
 	return nil
 }
 
