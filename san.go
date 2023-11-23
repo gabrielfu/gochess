@@ -21,7 +21,7 @@ func ParseSAN(san string, b *Board) (*Move, error) {
 		if isCastlingValid(move, b) {
 			return move, nil
 		} else {
-			return nil, fmt.Errorf("Invalid SAN: " + san)
+			return nil, fmt.Errorf("Illegal SAN: " + san)
 		}
 	}
 	if san == "0-0-0" || san == "O-O-O" || san == "o-o-o" {
@@ -29,7 +29,7 @@ func ParseSAN(san string, b *Board) (*Move, error) {
 		if isCastlingValid(move, b) {
 			return move, nil
 		} else {
-			return nil, fmt.Errorf("Invalid SAN: " + san)
+			return nil, fmt.Errorf("Illegal SAN: " + san)
 		}
 	}
 
@@ -102,10 +102,8 @@ func ParseSAN(san string, b *Board) (*Move, error) {
 		toRank = matches[5]
 	}
 
-	// fmt.Printf("pieceType=%v toFile=%v toRank=%v\n", sanToPieceType[pieceType], toFile, toRank)
-
 	if matches == nil {
-		return nil, fmt.Errorf("Invalid SAN: " + san)
+		return nil, fmt.Errorf("Malformed SAN: " + san)
 	}
 
 	piece := PieceFromTypeColor(sanToPieceType[pieceType], b.Turn())
@@ -127,7 +125,7 @@ func ParseSAN(san string, b *Board) (*Move, error) {
 	})
 	switch len(legalMoves) {
 	case 0:
-		return nil, fmt.Errorf("Invalid SAN: " + san)
+		return nil, fmt.Errorf("Illegal SAN: " + san)
 	case 1:
 		from = legalMoves[0].From()
 	default:
