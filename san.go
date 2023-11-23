@@ -59,27 +59,53 @@ func ParseSAN(san string, b *Board) (*Move, error) {
 	var toRank string
 	var promotion string
 
-	// parse moves without capture (b4, Nh4)
-	if matches = regexp.MustCompile(`^([PRNBKQ])?([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
-		pieceType = matches[1]
+	// parse pawn moves without capture (b4, Nh4)
+	if matches = regexp.MustCompile(`^P?([a-h])([2-7])$`).FindStringSubmatch(san); matches != nil {
+		pieceType = ""
+		toFile = matches[1]
+		toRank = matches[2]
+	} else
+
+	// parse pawn moves with capture (axb4)
+	if matches = regexp.MustCompile(`^P?([a-h])?x([a-h])([2-7])$`).FindStringSubmatch(san); matches != nil {
+		pieceType = ""
+		fromFile = matches[1]
 		toFile = matches[2]
 		toRank = matches[3]
 	} else
 
-	// parse pawn promotion (b8Q, b8=Q)
+	// parse pawn push promotion (b8Q, b8=Q)
 	if matches = regexp.MustCompile(`^P?([a-h])([18])=?([RNBQ])$`).FindStringSubmatch(san); matches != nil {
-		pieceType = matches[0]
+		pieceType = ""
 		toFile = matches[1]
 		toRank = matches[2]
 		promotion = matches[3]
 	} else
 
-	// parse pawn moves with capture (axb4)
-	if matches = regexp.MustCompile(`^([a-h])?x([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
+	// parse pawn capture promotion (axb8Q, axb8=Q)
+	if matches = regexp.MustCompile(`^P?([a-h])?x([a-h])([18])=?([RNBQ])$`).FindStringSubmatch(san); matches != nil {
 		pieceType = ""
+		fromFile = matches[1]
 		toFile = matches[2]
 		toRank = matches[3]
-		fromFile = matches[1]
+		promotion = matches[4]
+	} else
+
+	// parse pawn moves without capture (b4, Nh4)
+	if matches = regexp.MustCompile(`^P?([a-h])([18])$`).FindStringSubmatch(san); matches != nil {
+		return nil, fmt.Errorf("Missing promotion SAN: " + san)
+	} else
+
+	// parse pawn moves with capture (axb4)
+	if matches = regexp.MustCompile(`^P?([a-h])?x([a-h])([18])$`).FindStringSubmatch(san); matches != nil {
+		return nil, fmt.Errorf("Missing promotion SAN: " + san)
+	} else
+
+	// parse piece moves without capture (Nh4)
+	if matches = regexp.MustCompile(`^([RNBKQ])?([a-h])([1-8])$`).FindStringSubmatch(san); matches != nil {
+		pieceType = matches[1]
+		toFile = matches[2]
+		toRank = matches[3]
 	} else
 
 	// parse piece moves with capture (Nxh4)

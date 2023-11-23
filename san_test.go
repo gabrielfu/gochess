@@ -21,6 +21,7 @@ func TestParseSAN(t *testing.T) {
 
 	illegalError := errors.New("Illegal SAN")
 	ambiguousError := errors.New("Ambiguous SAN")
+	missingPromotionError := errors.New("Missing promotion SAN")
 
 	testCases := []struct {
 		san      string
@@ -43,12 +44,27 @@ func TestParseSAN(t *testing.T) {
 			err:      nil,
 		},
 		{
+			san:      "b8",
+			expected: nil,
+			err:      missingPromotionError,
+		},
+		{
+			san:      "axb8",
+			expected: nil,
+			err:      missingPromotionError,
+		},
+		{
 			san:      "b8Q",
 			expected: &Move{B7, B8, WHITE_PAWN, 0, WHITE_QUEEN},
 			err:      nil,
 		},
 		{
 			san:      "b8=Q",
+			expected: &Move{B7, B8, WHITE_PAWN, 0, WHITE_QUEEN},
+			err:      nil,
+		},
+		{
+			san:      "axb8=Q",
 			expected: &Move{B7, B8, WHITE_PAWN, 0, WHITE_QUEEN},
 			err:      nil,
 		},
