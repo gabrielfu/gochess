@@ -21,7 +21,6 @@ func main() {
 
 	g := gochess.NewGame()
 
-	var i = 0
 	for {
 		screen.Clear()
 		screen.MoveTopLeft()
@@ -60,7 +59,6 @@ func main() {
 		}
 		// reset error message
 		errMsg = ""
-		i++
 	}
 
 	fmt.Print("Press Enter key to exit...")
