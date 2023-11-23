@@ -47,11 +47,13 @@ func main() {
 			message = err.Error()
 			continue
 		}
+		san := move.ToSAN(g.Board())
+
 		if err := g.Move(move); err != nil {
 			message = err.Error()
 			continue
 		}
-		history += fmt.Sprintf("%s%s ", historyTurnNotation, input)
+		history += fmt.Sprintf("%s%s ", historyTurnNotation, san)
 		// reset message
 		message = ""
 		i++

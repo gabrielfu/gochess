@@ -15,6 +15,15 @@ var sanToPieceType = map[string]PieceType{
 	"K": KING,
 }
 
+var pieceTypeToSAN = map[PieceType]string{
+	PAWN:   "",
+	KNIGHT: "N",
+	BISHOP: "B",
+	ROOK:   "R",
+	QUEEN:  "Q",
+	KING:   "K",
+}
+
 func ParseSAN(san string, b *Board) (*Move, error) {
 	if san == "0-0" || san == "O-O" || san == "o-o" {
 		move := NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE)
@@ -137,4 +146,68 @@ func ParseSAN(san string, b *Board) (*Move, error) {
 		move.SetPromotion(PieceFromTypeColor(sanToPieceType[promotion], b.Turn()))
 	}
 	return move, nil
+}
+
+// ToSAN converts a move to Standard Algebraic Notation (SAN). b is the board *before* the move.
+func (m *Move) ToSAN(b *Board) string {
+	switch m.Castle() {
+	case WHITE_KING_SIDE, BLACK_KING_SIDE:
+		return "O-O"
+	case WHITE_QUEEN_SIDE, BLACK_QUEEN_SIDE:
+		return "O-O-O"
+	default:
+	}
+
+	san := pieceTypeToSAN[m.Piece().PieceType()]
+
+	// disambiguate
+	legalMoves := b.LegalMovesForPiece([]Piece{m.Piece()})
+	legalMoves = FilterMoves(legalMoves, func(move *Move) bool {
+		return move.To() == m.To()
+	})
+	if len(legalMoves) > 1 {
+		// disambiguate by file
+		disByFile := FilterMoves(legalMoves, func(move *Move) bool {
+			return move.From().File() == m.From().File()
+		})
+		if len(disByFile) == 1 {
+			san += m.From().File().String()
+		} else {
+			// disambiguate by rank
+			disByRank := FilterMoves(legalMoves, func(move *Move) bool {
+				return move.From().Rank() == m.From().Rank()
+			})
+			if len(disByRank) == 1 {
+				san += m.From().Rank().String()
+			} else {
+				// disambiguate by file and rank
+				san += m.From().String()
+			}
+		}
+	}
+
+	// check for capture
+	var enemyOccupied Bitboard
+	switch b.Turn() {
+	case WHITE:
+		enemyOccupied = b.blackOccupied
+	case BLACK:
+		enemyOccupied = b.whiteOccupied
+	}
+	isCapture := enemyOccupied.SquareIsSet(m.To())
+	if isCapture {
+		if m.Piece().PieceType() == PAWN {
+			san += m.From().File().String()
+		}
+		san += "x"
+	}
+
+	// add destination square
+	san += m.To().String()
+
+	// add promotion
+	if m.Promotion() != EMPTY {
+		san += "=" + pieceTypeToSAN[m.Promotion().PieceType()]
+	}
+	return san
 }
