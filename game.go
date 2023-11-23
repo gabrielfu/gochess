@@ -1,14 +1,20 @@
 package chessago
 
+import "fmt"
+
 type Game struct {
-	board *Board
+	board   *Board
+	history []*Move
+	pgn     string
 }
 
 func NewGame() *Game {
 	InitMovesTables()
 
 	return &Game{
-		board: NewStartingBoard(),
+		board:   NewStartingBoard(),
+		history: []*Move{},
+		pgn:     "",
 	}
 }
 
@@ -31,9 +37,29 @@ func (g *Game) Visualize() string {
 
 // Move executes the given move on the board.
 func (g *Game) Move(move *Move) error {
-	return g.Board().Move(move)
+	san := move.ToSAN(g.Board())
+	turnNotation := ""
+	if g.Turn() == WHITE {
+		turnNotation = fmt.Sprintf("%d. ", len(g.history)/2+1)
+	}
+
+	err := g.Board().Move(move)
+	if err != nil {
+		return err
+	}
+	g.history = append(g.history, move)
+	g.pgn += turnNotation + san + " "
+	return err
 }
 
 func (g *Game) Turn() Color {
 	return g.Board().Turn()
+}
+
+func (g *Game) History() []*Move {
+	return g.history
+}
+
+func (g *Game) PGN() string {
+	return g.pgn
 }
