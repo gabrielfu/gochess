@@ -178,6 +178,22 @@ func (sq Square) Rank() Rank {
 	return Rank(sq / 8)
 }
 
+func FileFromAlgebraic(algebraic string) File {
+	return File(7 - (algebraic[0] - 'a'))
+}
+
+func RankFromAlgebraic(algebraic string) Rank {
+	return Rank(algebraic[1] - '1')
+}
+
+func SquareFromAlgebraic(algebraic string) Square {
+	return SquareFromFileRank(FileFromAlgebraic(algebraic), RankFromAlgebraic(algebraic))
+}
+
+func SquareFromFileRank(file File, rank Rank) Square {
+	return Square(uint8(rank)*8 + uint8(file))
+}
+
 type Castle uint8
 
 const (
@@ -290,6 +306,10 @@ func (b *Board) Copy() *Board {
 		blackOccupied:  b.blackOccupied,
 		allOccupied:    b.allOccupied,
 	}
+}
+
+func (b *Board) Turn() Color {
+	return b.turn
 }
 
 func (b *Board) AddPieceToSquare(p Piece, sq Square) {

@@ -140,3 +140,62 @@ func TestStartingPosition(t *testing.T) {
 		}
 	}
 }
+
+func TestFileFromAlgebraic(t *testing.T) {
+	var tests = []struct {
+		algebraic string
+		expected  File
+	}{
+		{"a1", A},
+		{"b1", B},
+		{"c1", C},
+		{"d1", D},
+		{"e1", E},
+		{"f1", F},
+		{"g1", G},
+		{"h1", H},
+	}
+	for _, tt := range tests {
+		if file := FileFromAlgebraic(tt.algebraic); file != tt.expected {
+			t.Errorf("Expected %v, got %v", tt.expected, file)
+		}
+	}
+}
+
+func TestRankFromAlgebraic(t *testing.T) {
+	var tests = []struct {
+		algebraic string
+		expected  Rank
+	}{
+		{"a1", R1},
+		{"a2", R2},
+		{"a3", R3},
+		{"a4", R4},
+		{"a5", R5},
+		{"a6", R6},
+		{"a7", R7},
+		{"a8", R8},
+	}
+	for _, tt := range tests {
+		if rank := RankFromAlgebraic(tt.algebraic); rank != tt.expected {
+			t.Errorf("Expected %v, got %v", tt.expected, rank)
+		}
+	}
+}
+
+func TestSquareFromAlgebraic(t *testing.T) {
+	var tests = []struct {
+		algebraic string
+		expected  Square
+	}{
+		{"a1", A1},
+		{"c3", C3},
+		{"f6", F6},
+		{"h8", H8},
+	}
+	for _, tt := range tests {
+		if square := SquareFromAlgebraic(tt.algebraic); square != tt.expected {
+			t.Errorf("Expected %v, got %v", tt.expected, square)
+		}
+	}
+}
