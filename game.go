@@ -26,10 +26,14 @@ func (g *Game) LegalMoves() []*Move {
 }
 
 func (g *Game) Visualize() string {
-	return g.board.Visualize()
+	return g.Board().Visualize()
 }
 
 // Move executes the given move on the board.
 func (g *Game) Move(move *Move) error {
-	return g.board.Move(move)
+	return g.Board().Move(move)
+}
+
+func (g *Game) Turn() Color {
+	return g.Board().Turn()
 }

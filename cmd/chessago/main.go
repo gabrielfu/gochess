@@ -14,6 +14,7 @@ func main() {
 	screen.Clear()
 	reader := bufio.NewReader(os.Stdin)
 	var history string
+	var historyTurnNotation string
 	var message string
 
 	g := chessago.NewGame()
@@ -25,8 +26,14 @@ func main() {
 		fmt.Println(g.Visualize())
 		fmt.Println()
 		fmt.Println(history)
-		fmt.Println(message)
+		fmt.Printf("\033[0;31m%s\033[0;39m\n", message)
 		fmt.Print("Your move: ")
+
+		if g.Turn() == chessago.WHITE {
+			historyTurnNotation = fmt.Sprintf("%d. ", i/2+1)
+		} else {
+			historyTurnNotation = ""
+		}
 
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -44,7 +51,7 @@ func main() {
 			message = err.Error()
 			continue
 		}
-		history += fmt.Sprintf("%d. %s ", i/2+1, input)
+		history += fmt.Sprintf("%s%s ", historyTurnNotation, input)
 		// reset message
 		message = ""
 		i++
