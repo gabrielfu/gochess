@@ -102,30 +102,26 @@ func parseSAN(san string, b *Board) (*Move, error) {
 	to := SquareFromAlgebraic(toFile + toRank)
 
 	var from Square
-	if fromFile != "" && fromRank != "" {
-		from = SquareFromAlgebraic(fromFile + fromRank)
-	} else {
-		// infer "from" square from the board
-		legalMoves := b.LegalMovesForPiece([]Piece{piece})
-		legalMoves = FilterMoves(legalMoves, func(move *Move) bool {
-			cond := move.To() == to
-			// disambiguate
-			if fromFile != "" {
-				cond = cond && move.From().File() == ParseFile(fromFile)
-			}
-			if fromRank != "" {
-				cond = cond && move.From().Rank() == ParseRank(fromRank)
-			}
-			return cond
-		})
-		switch len(legalMoves) {
-		case 0:
-			return nil, fmt.Errorf("Invalid SAN: " + san)
-		case 1:
-			from = legalMoves[0].From()
-		default:
-			return nil, fmt.Errorf("Ambiguous SAN: " + san)
+	// infer "from" square from the board
+	legalMoves := b.LegalMovesForPiece([]Piece{piece})
+	legalMoves = FilterMoves(legalMoves, func(move *Move) bool {
+		cond := move.To() == to
+		// disambiguate
+		if fromFile != "" {
+			cond = cond && move.From().File() == ParseFile(fromFile)
 		}
+		if fromRank != "" {
+			cond = cond && move.From().Rank() == ParseRank(fromRank)
+		}
+		return cond
+	})
+	switch len(legalMoves) {
+	case 0:
+		return nil, fmt.Errorf("Invalid SAN: " + san)
+	case 1:
+		from = legalMoves[0].From()
+	default:
+		return nil, fmt.Errorf("Ambiguous SAN: " + san)
 	}
 
 	move := NewMove(from, to, piece)
