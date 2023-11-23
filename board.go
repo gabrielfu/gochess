@@ -608,15 +608,16 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 	// After making a move, cannot be in check
 	moves = FilterMoves(moves, func(move *Move) bool {
 		cpy := b.Copy()
-		turn := cpy.Turn()
 		err := cpy.Move(move)
 		if err != nil {
 			return false
 		}
-		if turn == WHITE {
-			return isSquareAttacked(cpy.whiteKing.Squares()[0], cpy)
+		// go back to original turn
+		cpy.turn = 1 - cpy.turn
+		if cpy.Turn() == WHITE {
+			return !isSquareAttacked(cpy.whiteKing.Squares()[0], cpy)
 		}
-		return isSquareAttacked(cpy.blackKing.Squares()[0], cpy)
+		return !isSquareAttacked(cpy.blackKing.Squares()[0], cpy)
 	})
 	return moves
 }
