@@ -36,6 +36,19 @@ func (m *Move) String() string {
 	return out
 }
 
+func (m *Move) Equals(other *Move) bool {
+	if m == nil && other == nil {
+		return true
+	}
+	if m == nil || other == nil {
+		return false
+	}
+	return m.from == other.from &&
+		m.to == other.to &&
+		m.piece == other.piece &&
+		m.castle == other.castle
+}
+
 func (m *Move) From() Square {
 	return m.from
 }
