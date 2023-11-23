@@ -492,6 +492,7 @@ func (b *Board) makeMove(move *Move) error {
 	return nil
 }
 
+// Move moves a piece on the board without legality validation.
 func (b *Board) Move(move *Move) error {
 	if move.Castle() != 0 {
 		if err := b.makeCastleMove(move); err != nil {
@@ -603,6 +604,20 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 			}
 		}
 	}
+
+	// After making a move, cannot be in check
+	moves = FilterMoves(moves, func(move *Move) bool {
+		cpy := b.Copy()
+		turn := cpy.Turn()
+		err := cpy.Move(move)
+		if err != nil {
+			return false
+		}
+		if turn == WHITE {
+			return isSquareAttacked(cpy.whiteKing.Squares()[0], cpy)
+		}
+		return isSquareAttacked(cpy.blackKing.Squares()[0], cpy)
+	})
 	return moves
 }
 
