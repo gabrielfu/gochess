@@ -6,6 +6,8 @@ type Game struct {
 	board   *Board
 	history []*Move
 	pgn     string
+	ended   bool
+	winner  Color
 }
 
 func NewGame() *Game {
@@ -15,6 +17,8 @@ func NewGame() *Game {
 		board:   NewStartingBoard(),
 		history: []*Move{},
 		pgn:     "",
+		ended:   false,
+		winner:  NO_COLOR,
 	}
 }
 
@@ -53,6 +57,13 @@ func (g *Game) Move(move *Move) error {
 	}
 	g.history = append(g.history, move)
 	g.pgn += turnNotation + san + " "
+
+	if g.Board().IsInCheckmate() {
+		g.ended = true
+		winner := 1 - g.Turn()
+		g.winner = winner
+		g.pgn += fmt.Sprintf("%d-%d", 1-winner, winner)
+	}
 	return err
 }
 
@@ -66,4 +77,12 @@ func (g *Game) History() []*Move {
 
 func (g *Game) PGN() string {
 	return g.pgn
+}
+
+func (g *Game) Ended() bool {
+	return g.ended
+}
+
+func (g *Game) Winner() Color {
+	return g.winner
 }

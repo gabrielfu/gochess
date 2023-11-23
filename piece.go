@@ -5,13 +5,17 @@ type Color uint8
 const (
 	WHITE Color = iota
 	BLACK
+	NO_COLOR
 )
 
 func (c Color) String() string {
-	if c == WHITE {
+	switch c {
+	case WHITE:
 		return "White"
-	} else {
+	case BLACK:
 		return "Black"
+	default:
+		return "No Color"
 	}
 }
 
