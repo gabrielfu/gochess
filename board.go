@@ -178,16 +178,16 @@ func (sq Square) Rank() Rank {
 	return Rank(sq / 8)
 }
 
-func FileFromAlgebraic(algebraic string) File {
-	return File(7 - (algebraic[0] - 'a'))
+func ParseFile(file string) File {
+	return File(7 - (file[0] - 'a'))
 }
 
-func RankFromAlgebraic(algebraic string) Rank {
-	return Rank(algebraic[1] - '1')
+func ParseRank(rank string) Rank {
+	return Rank(rank[0] - '1')
 }
 
 func SquareFromAlgebraic(algebraic string) Square {
-	return SquareFromFileRank(FileFromAlgebraic(algebraic), RankFromAlgebraic(algebraic))
+	return SquareFromFileRank(ParseFile(algebraic[0:1]), ParseRank(algebraic[1:2]))
 }
 
 func SquareFromFileRank(file File, rank Rank) Square {
@@ -508,4 +508,112 @@ func (b *Board) Move(move *Move) error {
 	// Next player's turn
 	b.turn = 1 - b.turn
 	return nil
+}
+
+// LegalMoves returns all legal moves for the current player and specified candidate pieces.
+func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
+	var allowedTos Bitboard
+	var enemyOccupied Bitboard
+	switch b.Turn() {
+	case WHITE:
+		allowedTos = ^b.whiteOccupied
+		enemyOccupied = b.blackOccupied
+	case BLACK:
+		allowedTos = ^b.blackOccupied
+		enemyOccupied = b.whiteOccupied
+	}
+
+	moves := []*Move{}
+	for _, p := range candidatePieces {
+		bb := b.GetBbForPiece(p)
+		// If no more such pieces on the board, skip
+		if bb == nil || *bb == 0 {
+			continue
+		}
+
+		// For each "from" square
+		for _, from := range bb.Squares() {
+			var toBb Bitboard = Bitboard(0)
+			switch p {
+			case WHITE_KNIGHT, BLACK_KNIGHT:
+				toBb = GetKnightMoves(Square(from)) & allowedTos
+			case WHITE_PAWN:
+				attackBb := GetWhitePawnAttacks(Square(from)) & enemyOccupied
+				moveBb := (GetWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				toBb = attackBb | moveBb
+			case BLACK_PAWN:
+				attackBb := GetBlackPawnAttacks(Square(from)) & enemyOccupied
+				moveBb := (GetBlackPawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				toBb = attackBb | moveBb
+			case WHITE_BISHOP, BLACK_BISHOP:
+				toBb = GetBishopMoves(Square(from), b.allOccupied) & allowedTos
+			case WHITE_ROOK, BLACK_ROOK:
+				toBb = GetRookMoves(Square(from), b.allOccupied) & allowedTos
+			case WHITE_QUEEN, BLACK_QUEEN:
+				toBb = GetQueenMoves(Square(from), b.allOccupied) & allowedTos
+			case WHITE_KING, BLACK_KING:
+				toBb = GetKingMoves(Square(from)) & allowedTos
+			}
+
+			// For each "to" square
+			for _, to := range toBb.Squares() {
+				moves = append(moves, &Move{
+					from:  Square(from),
+					to:    Square(to),
+					piece: p,
+				})
+			}
+
+			// castling
+			if p == WHITE_KING && from == E1 {
+				if b.castlingRights.Has(WHITE_QUEEN_SIDE) {
+					// TODO: check castling path condition
+					moves = append(moves, &Move{
+						from:   E1,
+						to:     C1,
+						piece:  WHITE_KING,
+						castle: WHITE_QUEEN_SIDE,
+					})
+				}
+				if b.castlingRights.Has(WHITE_KING_SIDE) {
+					moves = append(moves, &Move{
+						from:   E1,
+						to:     G1,
+						piece:  WHITE_KING,
+						castle: WHITE_KING_SIDE,
+					})
+				}
+			} else if p == BLACK_KING && from == E8 {
+				if b.castlingRights.Has(BLACK_QUEEN_SIDE) {
+					moves = append(moves, &Move{
+						from:   E8,
+						to:     C8,
+						piece:  BLACK_KING,
+						castle: BLACK_QUEEN_SIDE,
+					})
+				}
+				if b.castlingRights.Has(BLACK_KING_SIDE) {
+					moves = append(moves, &Move{
+						from:   E8,
+						to:     G8,
+						piece:  BLACK_KING,
+						castle: BLACK_KING_SIDE,
+					})
+				}
+			}
+		}
+	}
+	return moves
+}
+
+// LegalMoves returns all legal moves for the current player.
+func (b *Board) LegalMoves() []*Move {
+	var candidatePieces []Piece
+	switch b.Turn() {
+	case WHITE:
+		candidatePieces = WHITE_PIECES
+	case BLACK:
+		candidatePieces = BLACK_PIECES
+	}
+	return b.LegalMovesForPiece(candidatePieces)
 }

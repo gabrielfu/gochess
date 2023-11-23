@@ -1,34 +1,38 @@
 package chessago
 
 type Move struct {
-	from        Square
-	to          Square
-	piece       Piece
-	castle      Castle
-	validated   bool
-	isCapture   bool
-	isPromotion bool
+	from      Square
+	to        Square
+	piece     Piece
+	castle    Castle
+	promotion Piece
 }
 
 func NewMove(from Square, to Square, piece Piece) *Move {
 	return &Move{
-		from:  from,
-		to:    to,
-		piece: piece,
+		from:      from,
+		to:        to,
+		piece:     piece,
+		promotion: EMPTY,
 	}
 }
 
 func NewCastlingMove(from Square, to Square, piece Piece, castle Castle) *Move {
 	return &Move{
-		from:   from,
-		to:     to,
-		piece:  piece,
-		castle: castle,
+		from:      from,
+		to:        to,
+		piece:     piece,
+		castle:    castle,
+		promotion: EMPTY,
 	}
 }
 
 func (m *Move) String() string {
-	return m.Piece().Symbol() + " " + m.From().String() + " -> " + m.To().String()
+	out := m.Piece().Symbol() + " " + m.From().String() + " -> " + m.To().String()
+	if m.Promotion() != EMPTY {
+		out += " (" + m.Promotion().Symbol() + ")"
+	}
+	return out
 }
 
 func (m *Move) From() Square {
@@ -51,36 +55,20 @@ func (m *Move) SetCastle(castle Castle) {
 	m.castle = castle
 }
 
-func (m *Move) Validated() bool {
-	return m.validated
+func (m *Move) Promotion() Piece {
+	return m.promotion
 }
 
-func (m *Move) IsCapture() bool {
-	return m.isCapture
+func (m *Move) SetPromotion(p Piece) {
+	m.promotion = p
 }
 
-func (m *Move) IsPromotion() bool {
-	return m.isPromotion
-}
-
-func (m *Move) Validate(board *Board) bool {
-	m.validated = false
-	m.isCapture = false
-	m.isPromotion = false
-
-	piece := board.GetPieceAtSquare(m.From())
-	if piece == WHITE_PAWN {
-		if m.To() == m.From()+8 {
-			m.validated = true
-		} else if m.To() == m.From()+16 && m.From() >= A2 && m.From() <= H2 {
-			m.validated = true
-		} else if m.To() == m.From()+7 && m.From()%8 != 0 && board.GetPieceAtSquare(m.To()) != EMPTY {
-			m.validated = true
-			m.isCapture = true
-		} else if m.To() == m.From()+9 && m.From()%8 != 7 && board.GetPieceAtSquare(m.To()) != EMPTY {
-			m.validated = true
-			m.isCapture = true
+func FilterMoves(moves []*Move, filter func(*Move) bool) []*Move {
+	out := make([]*Move, 0, len(moves))
+	for _, move := range moves {
+		if filter(move) {
+			out = append(out, move)
 		}
 	}
-	return true
+	return out
 }
