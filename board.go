@@ -230,81 +230,81 @@ type Board struct {
 
 	turn           Color
 	castlingRights CastlingRights
-	enPassant      uint8
 
-	whiteOccupied Bitboard
-	blackOccupied Bitboard
-	allOccupied   Bitboard
+	enPassantSquare Bitboard
+	whiteOccupied   Bitboard
+	blackOccupied   Bitboard
+	allOccupied     Bitboard
 }
 
 // NewEmptyBoard returns a new board with no pieces.
 func NewEmptyBoard() *Board {
 	return &Board{
-		whitePawns:     0,
-		whiteKnights:   0,
-		whiteBishops:   0,
-		whiteRooks:     0,
-		whiteQueens:    0,
-		whiteKing:      0,
-		blackPawns:     0,
-		blackKnights:   0,
-		blackBishops:   0,
-		blackRooks:     0,
-		blackQueens:    0,
-		blackKing:      0,
-		turn:           WHITE,
-		castlingRights: CastlingRights(WHITE_KING_SIDE | WHITE_QUEEN_SIDE | BLACK_KING_SIDE | BLACK_QUEEN_SIDE),
-		enPassant:      0,
-		whiteOccupied:  0,
-		blackOccupied:  0,
-		allOccupied:    0,
+		whitePawns:      0,
+		whiteKnights:    0,
+		whiteBishops:    0,
+		whiteRooks:      0,
+		whiteQueens:     0,
+		whiteKing:       0,
+		blackPawns:      0,
+		blackKnights:    0,
+		blackBishops:    0,
+		blackRooks:      0,
+		blackQueens:     0,
+		blackKing:       0,
+		turn:            WHITE,
+		castlingRights:  CastlingRights(WHITE_KING_SIDE | WHITE_QUEEN_SIDE | BLACK_KING_SIDE | BLACK_QUEEN_SIDE),
+		enPassantSquare: 0,
+		whiteOccupied:   0,
+		blackOccupied:   0,
+		allOccupied:     0,
 	}
 }
 
 // NewStartingBoard returns a new board with the starting position.
 func NewStartingBoard() *Board {
 	return &Board{
-		whitePawns:     0x000000000000ff00,
-		whiteKnights:   0x0000000000000042,
-		whiteBishops:   0x0000000000000024,
-		whiteRooks:     0x0000000000000081,
-		whiteQueens:    0x0000000000000010,
-		whiteKing:      0x0000000000000008,
-		blackPawns:     0x00ff000000000000,
-		blackKnights:   0x4200000000000000,
-		blackBishops:   0x2400000000000000,
-		blackRooks:     0x8100000000000000,
-		blackQueens:    0x1000000000000000,
-		blackKing:      0x0800000000000000,
-		turn:           WHITE,
-		castlingRights: 0,
-		enPassant:      0,
-		whiteOccupied:  0x000000000000ffff,
-		blackOccupied:  0xffff000000000000,
-		allOccupied:    0xffff00000000ffff,
+		whitePawns:      0x000000000000ff00,
+		whiteKnights:    0x0000000000000042,
+		whiteBishops:    0x0000000000000024,
+		whiteRooks:      0x0000000000000081,
+		whiteQueens:     0x0000000000000010,
+		whiteKing:       0x0000000000000008,
+		blackPawns:      0x00ff000000000000,
+		blackKnights:    0x4200000000000000,
+		blackBishops:    0x2400000000000000,
+		blackRooks:      0x8100000000000000,
+		blackQueens:     0x1000000000000000,
+		blackKing:       0x0800000000000000,
+		turn:            WHITE,
+		castlingRights:  0,
+		enPassantSquare: 0,
+		whiteOccupied:   0x000000000000ffff,
+		blackOccupied:   0xffff000000000000,
+		allOccupied:     0xffff00000000ffff,
 	}
 }
 
 func (b *Board) Copy() *Board {
 	return &Board{
-		whitePawns:     b.whitePawns,
-		whiteKnights:   b.whiteKnights,
-		whiteBishops:   b.whiteBishops,
-		whiteRooks:     b.whiteRooks,
-		whiteQueens:    b.whiteQueens,
-		whiteKing:      b.whiteKing,
-		blackPawns:     b.blackPawns,
-		blackKnights:   b.blackKnights,
-		blackBishops:   b.blackBishops,
-		blackRooks:     b.blackRooks,
-		blackQueens:    b.blackQueens,
-		blackKing:      b.blackKing,
-		turn:           b.turn,
-		castlingRights: b.castlingRights,
-		enPassant:      b.enPassant,
-		whiteOccupied:  b.whiteOccupied,
-		blackOccupied:  b.blackOccupied,
-		allOccupied:    b.allOccupied,
+		whitePawns:      b.whitePawns,
+		whiteKnights:    b.whiteKnights,
+		whiteBishops:    b.whiteBishops,
+		whiteRooks:      b.whiteRooks,
+		whiteQueens:     b.whiteQueens,
+		whiteKing:       b.whiteKing,
+		blackPawns:      b.blackPawns,
+		blackKnights:    b.blackKnights,
+		blackBishops:    b.blackBishops,
+		blackRooks:      b.blackRooks,
+		blackQueens:     b.blackQueens,
+		blackKing:       b.blackKing,
+		turn:            b.turn,
+		castlingRights:  b.castlingRights,
+		enPassantSquare: b.enPassantSquare,
+		whiteOccupied:   b.whiteOccupied,
+		blackOccupied:   b.blackOccupied,
+		allOccupied:     b.allOccupied,
 	}
 }
 
@@ -459,6 +459,10 @@ func (b *Board) makeCastleMove(move *Move) error {
 	return nil
 }
 
+func (b *Board) SquareIsEnpassant(sq Square) bool {
+	return b.enPassantSquare.SquareIsSet(sq)
+}
+
 func (b *Board) makeMove(move *Move) error {
 	// move this to validation
 	piece := b.GetPieceAtSquare(move.From())
@@ -472,13 +476,25 @@ func (b *Board) makeMove(move *Move) error {
 	}
 
 	// capture target
-	target := b.GetPieceAtSquare(move.To())
-	if target != EMPTY {
-		targetBb := b.GetBbForPiece(target)
-		if targetBb == nil || *targetBb == 0 {
-			return fmt.Errorf("Invalid target piece: " + target.Symbol())
+	if b.SquareIsEnpassant(move.To()) {
+		// en passant captures
+		if piece == WHITE_PAWN {
+			targetBb := b.GetBbForPiece(BLACK_PAWN)
+			*targetBb &^= (1 << SquareFromFileRank(move.To().File(), R5))
+		} else if piece == BLACK_PAWN {
+			targetBb := b.GetBbForPiece(WHITE_PAWN)
+			*targetBb &^= (1 << SquareFromFileRank(move.To().File(), R4))
 		}
-		*targetBb &^= (1 << move.To())
+	} else {
+		// other captures
+		target := b.GetPieceAtSquare(move.To())
+		if target != EMPTY {
+			targetBb := b.GetBbForPiece(target)
+			if targetBb == nil || *targetBb == 0 {
+				return fmt.Errorf("Invalid target piece: " + target.Symbol())
+			}
+			*targetBb &^= (1 << move.To())
+		}
 	}
 
 	// move the piece
@@ -514,6 +530,15 @@ func (b *Board) makeMove(move *Move) error {
 			return fmt.Errorf("Invalid promotion piece: " + move.Promotion().Symbol())
 		}
 		*promoBb |= (1 << move.To())
+	}
+
+	// mark en passant squares
+	if piece == WHITE_PAWN && move.From().Rank() == R2 && move.To().Rank() == R4 {
+		b.enPassantSquare |= (1 << SquareFromFileRank(move.From().File(), R3))
+	} else if piece == BLACK_PAWN && move.From().Rank() == R7 && move.To().Rank() == R5 {
+		b.enPassantSquare |= (1 << SquareFromFileRank(move.From().File(), R6))
+	} else {
+		b.enPassantSquare = 0
 	}
 
 	return nil
@@ -582,11 +607,11 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 			case WHITE_PAWN:
 				attackBb := GetWhitePawnAttacks(Square(from)) & enemyOccupied
 				moveBb := (GetWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
-				toBb = attackBb | moveBb
+				toBb = attackBb | moveBb | b.enPassantSquare
 			case BLACK_PAWN:
 				attackBb := GetBlackPawnAttacks(Square(from)) & enemyOccupied
 				moveBb := (GetBlackPawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
-				toBb = attackBb | moveBb
+				toBb = attackBb | moveBb | b.enPassantSquare
 			case WHITE_BISHOP, BLACK_BISHOP:
 				toBb = GetBishopMoves(Square(from), b.allOccupied) & allowedTos
 			case WHITE_ROOK, BLACK_ROOK:

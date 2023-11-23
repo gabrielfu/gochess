@@ -190,6 +190,7 @@ func (m *Move) ToSAN(b *Board) string {
 	san := pieceTypeToSAN[m.Piece().PieceType()]
 
 	// disambiguate
+	disambiguated := false
 	legalMoves := b.LegalMovesForPiece([]Piece{m.Piece()})
 	legalMoves = FilterMoves(legalMoves, func(move *Move) bool {
 		return move.To() == m.To()
@@ -200,6 +201,7 @@ func (m *Move) ToSAN(b *Board) string {
 			return move.From().File() == m.From().File()
 		})
 		if len(disByFile) == 1 {
+			disambiguated = true
 			san += m.From().File().String()
 		} else {
 			// disambiguate by rank
@@ -207,9 +209,11 @@ func (m *Move) ToSAN(b *Board) string {
 				return move.From().Rank() == m.From().Rank()
 			})
 			if len(disByRank) == 1 {
+				disambiguated = true
 				san += m.From().Rank().String()
 			} else {
 				// disambiguate by file and rank
+				disambiguated = true
 				san += m.From().String()
 			}
 		}
@@ -223,9 +227,9 @@ func (m *Move) ToSAN(b *Board) string {
 	case BLACK:
 		enemyOccupied = b.whiteOccupied
 	}
-	isCapture := enemyOccupied.SquareIsSet(m.To())
+	isCapture := enemyOccupied.SquareIsSet(m.To()) || (m.Piece().PieceType() == PAWN && b.SquareIsEnpassant(m.To()))
 	if isCapture {
-		if m.Piece().PieceType() == PAWN {
+		if !disambiguated && m.Piece().PieceType() == PAWN {
 			san += m.From().File().String()
 		}
 		san += "x"
