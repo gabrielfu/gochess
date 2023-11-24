@@ -41,6 +41,14 @@ func (g *Game) VisualizeFlipped() string {
 	return g.Board().VisualizeFlipped()
 }
 
+func (g *Game) MoveSAN(san string) error {
+	move, err := ParseSAN(san, g.Board())
+	if err != nil {
+		return err
+	}
+	return g.Move(move)
+}
+
 // Move executes the given move on the board.
 func (g *Game) Move(move *Move) error {
 	san := move.ToSAN(g.Board())

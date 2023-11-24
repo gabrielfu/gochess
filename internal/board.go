@@ -538,6 +538,14 @@ func (b *Board) makeMove(move *Move) error {
 	return nil
 }
 
+func (b *Board) MoveSAN(san string) error {
+	move, err := ParseSAN(san, b)
+	if err != nil {
+		return err
+	}
+	return b.Move(move)
+}
+
 // Move moves a piece on the board without legality validation.
 func (b *Board) Move(move *Move) error {
 	if move.Castle() != 0 {

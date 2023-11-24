@@ -7,13 +7,13 @@ import (
 
 func main() {
 	g := gochess.NewGame()
-	g.Move(gochess.MustParseSAN("g4", g.Board()))
-	g.Move(gochess.MustParseSAN("g5", g.Board()))
-	g.Move(gochess.MustParseSAN("h4", g.Board()))
-	g.Move(gochess.MustParseSAN("h5", g.Board()))
-	g.Move(gochess.MustParseSAN("g5", g.Board()))
-	g.Move(gochess.MustParseSAN("g4", g.Board()))
-	g.Move(gochess.MustParseSAN("Rh8", g.Board()))
+	g.MoveSAN("g4")
+	g.MoveSAN("g5")
+	g.MoveSAN("h4")
+	g.MoveSAN("h5")
+	g.MoveSAN("g5")
+	g.MoveSAN("g4")
+	g.MoveSAN("Rh8")
 
 	fmt.Println("WHITE_KING_SIDE:", g.Board().CastlingRights().Has(gochess.WHITE_KING_SIDE))
 	fmt.Println("WHITE_QUEEN_SIDE:", g.Board().CastlingRights().Has(gochess.WHITE_QUEEN_SIDE))
