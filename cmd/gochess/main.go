@@ -25,6 +25,8 @@ func main() {
 	for {
 		screen.Clear()
 		screen.MoveTopLeft()
+		fmt.Println(gochess.Banner())
+		fmt.Println()
 		if *flip && g.Board().Turn() == gochess.BLACK {
 			fmt.Println(g.VisualizeFlipped())
 		} else {
