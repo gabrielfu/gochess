@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	gochess "gochess/internal"
 
@@ -13,7 +14,9 @@ import (
 
 func main() {
 	flip := flag.Bool("flip", false, "flip the board at Black's turn")
-	eval := flag.Bool("eval", false, "flip the board at Black's turn")
+	eval := flag.Bool("eval", false, "show the evaluation bar")
+	whiteEngine := flag.Bool("w", false, "white will be played by an engine")
+	blackEngine := flag.Bool("b", false, "black will be played by an engine")
 	flag.Parse()
 
 	screen.Clear()
@@ -49,25 +52,40 @@ func main() {
 		}
 
 		fmt.Printf("\033[0;31m%s\033[0;39m\n", errMsg)
-		fmt.Print("Your move: ")
 
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			errMsg = "Error reading input: " + err.Error()
-			continue
-		}
-		input = input[:len(input)-1]
+		playerTurn := (g.Turn() == gochess.WHITE && !*whiteEngine) || (g.Turn() == gochess.BLACK && !*blackEngine)
+		if playerTurn {
+			fmt.Print("Your move: ")
 
-		move, err := gochess.ParseSAN(input, g.Board())
-		if err != nil {
-			errMsg = err.Error()
-			continue
+			input, err := reader.ReadString('\n')
+			if err != nil {
+				errMsg = "Error reading input: " + err.Error()
+				continue
+			}
+			input = input[:len(input)-1]
+
+			move, err := gochess.ParseSAN(input, g.Board())
+			if err != nil {
+				errMsg = err.Error()
+				continue
+			}
+
+			if err := g.Move(move); err != nil {
+				errMsg = err.Error()
+				continue
+			}
+		} else {
+			fmt.Print("Engine is thinking...")
+			result := gochess.Search(g.Board(), 4)
+			if result.Move() == nil {
+				errMsg = "Engine could not find a move!"
+				continue
+			}
+			fmt.Println(result.Move().ToSAN(g.Board()))
+			g.Move(result.Move())
+			time.Sleep(50 * time.Millisecond)
 		}
 
-		if err := g.Move(move); err != nil {
-			errMsg = err.Error()
-			continue
-		}
 		// reset error message
 		errMsg = ""
 	}
