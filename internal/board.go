@@ -478,6 +478,17 @@ func (b *Board) makeMove(move *Move) error {
 				return fmt.Errorf("Invalid target piece: " + target.Symbol())
 			}
 			*targetBb &^= (1 << move.To())
+
+			// remove castling right if rook is captured
+			if target == WHITE_ROOK && move.To() == A1 {
+				b.castlingRights = b.castlingRights.Remove(WHITE_QUEEN_SIDE)
+			} else if target == WHITE_ROOK && move.To() == H1 {
+				b.castlingRights = b.castlingRights.Remove(WHITE_KING_SIDE)
+			} else if target == BLACK_ROOK && move.To() == A8 {
+				b.castlingRights = b.castlingRights.Remove(BLACK_QUEEN_SIDE)
+			} else if target == BLACK_ROOK && move.To() == H8 {
+				b.castlingRights = b.castlingRights.Remove(BLACK_KING_SIDE)
+			}
 		}
 	}
 
@@ -486,8 +497,7 @@ func (b *Board) makeMove(move *Move) error {
 	*bb &^= (1 << move.From())
 	*bb |= (1 << move.To())
 
-	// remove castling right
-	// TODO: remove castling right if rook is captured
+	// remove castling right if king or rook is moved
 	if piece == WHITE_KING {
 		b.castlingRights = b.castlingRights.Remove(WHITE_KING_SIDE).Remove(WHITE_QUEEN_SIDE)
 	} else if piece == BLACK_KING {
@@ -666,4 +676,8 @@ func (b *Board) LegalMoves() []*Move {
 		candidatePieces = BLACK_PIECES
 	}
 	return b.LegalMovesForPiece(candidatePieces)
+}
+
+func (b *Board) CastlingRights() CastlingRights {
+	return b.castlingRights
 }
