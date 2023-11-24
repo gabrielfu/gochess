@@ -68,11 +68,7 @@ func TestMoveWithoutCapture(t *testing.T) {
 	b := NewEmptyBoard()
 	// Test moving a pawn without capture.
 	b.AddPieceToSquare(WHITE_PAWN, D2)
-	b.Move(&Move{
-		from:  D2,
-		to:    D4,
-		piece: WHITE_PAWN,
-	})
+	b.Move(NewMove(D2, D4, WHITE_PAWN))
 	if b.whitePawns != 1<<D4 {
 		t.Errorf("Expected 1<<D4, got %v", b.whitePawns)
 	}
@@ -86,11 +82,7 @@ func TestMoveWithCapture(t *testing.T) {
 	// Test moving a pawn with capture.
 	b.AddPieceToSquare(WHITE_PAWN, D2)
 	b.AddPieceToSquare(BLACK_ROOK, E3)
-	b.Move(&Move{
-		from:  D2,
-		to:    E3,
-		piece: WHITE_PAWN,
-	})
+	b.Move(NewMove(D2, E3, WHITE_PAWN))
 	if b.whitePawns != 1<<E3 {
 		t.Errorf("Expected 1<<E3, got %v", b.whitePawns)
 	}

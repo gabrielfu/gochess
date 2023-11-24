@@ -28,6 +28,16 @@ func NewCastlingMove(from Square, to Square, piece Piece, castle Castle) *Move {
 	}
 }
 
+func NewPromotionMove(from Square, to Square, piece Piece, promotion Piece) *Move {
+	return &Move{
+		from:      from,
+		to:        to,
+		piece:     piece,
+		castle:    0,
+		promotion: promotion,
+	}
+}
+
 func (m *Move) String() string {
 	out := m.Piece().Symbol() + " " + m.From().String() + " -> " + m.To().String()
 	if m.Promotion() != EMPTY {

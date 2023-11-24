@@ -55,17 +55,17 @@ func TestParseSAN(t *testing.T) {
 		},
 		{
 			san:      "b8Q",
-			expected: &Move{B7, B8, WHITE_PAWN, 0, WHITE_QUEEN},
+			expected: NewPromotionMove(B7, B8, WHITE_PAWN, WHITE_QUEEN),
 			err:      nil,
 		},
 		{
 			san:      "b8=Q",
-			expected: &Move{B7, B8, WHITE_PAWN, 0, WHITE_QUEEN},
+			expected: NewPromotionMove(B7, B8, WHITE_PAWN, WHITE_QUEEN),
 			err:      nil,
 		},
 		{
 			san:      "axb8=Q",
-			expected: &Move{B7, B8, WHITE_PAWN, 0, WHITE_QUEEN},
+			expected: NewPromotionMove(B7, B8, WHITE_PAWN, WHITE_QUEEN),
 			err:      nil,
 		},
 		{

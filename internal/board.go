@@ -426,29 +426,13 @@ func (b *Board) makeCastleMove(move *Move) error {
 	var rookMove *Move
 	switch move.Castle() {
 	case WHITE_KING_SIDE:
-		rookMove = &Move{
-			from:  H1,
-			to:    F1,
-			piece: WHITE_ROOK,
-		}
+		rookMove = NewMove(H1, F1, WHITE_ROOK)
 	case WHITE_QUEEN_SIDE:
-		rookMove = &Move{
-			from:  A1,
-			to:    D1,
-			piece: WHITE_ROOK,
-		}
+		rookMove = NewMove(A1, D1, WHITE_ROOK)
 	case BLACK_KING_SIDE:
-		rookMove = &Move{
-			from:  H8,
-			to:    F8,
-			piece: BLACK_ROOK,
-		}
+		rookMove = NewMove(H8, F8, BLACK_ROOK)
 	case BLACK_QUEEN_SIDE:
-		rookMove = &Move{
-			from:  A8,
-			to:    D8,
-			piece: BLACK_ROOK,
-		}
+		rookMove = NewMove(A8, D8, BLACK_ROOK)
 	}
 	if err := b.makeMove(move); err != nil {
 		return err
@@ -624,48 +608,24 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 
 			// For each "to" square
 			for _, to := range toBb.Squares() {
-				moves = append(moves, &Move{
-					from:  Square(from),
-					to:    Square(to),
-					piece: p,
-				})
+				moves = append(moves, NewMove(Square(from), Square(to), p))
 			}
 
 			// castling
 			if p == WHITE_KING && from == E1 {
 				if b.castlingRights.Has(WHITE_QUEEN_SIDE) {
 					// TODO: check castling path condition
-					moves = append(moves, &Move{
-						from:   E1,
-						to:     C1,
-						piece:  WHITE_KING,
-						castle: WHITE_QUEEN_SIDE,
-					})
+					moves = append(moves, NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE))
 				}
 				if b.castlingRights.Has(WHITE_KING_SIDE) {
-					moves = append(moves, &Move{
-						from:   E1,
-						to:     G1,
-						piece:  WHITE_KING,
-						castle: WHITE_KING_SIDE,
-					})
+					moves = append(moves, NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE))
 				}
 			} else if p == BLACK_KING && from == E8 {
 				if b.castlingRights.Has(BLACK_QUEEN_SIDE) {
-					moves = append(moves, &Move{
-						from:   E8,
-						to:     C8,
-						piece:  BLACK_KING,
-						castle: BLACK_QUEEN_SIDE,
-					})
+					moves = append(moves, NewCastlingMove(E8, C8, BLACK_KING, BLACK_QUEEN_SIDE))
 				}
 				if b.castlingRights.Has(BLACK_KING_SIDE) {
-					moves = append(moves, &Move{
-						from:   E8,
-						to:     G8,
-						piece:  BLACK_KING,
-						castle: BLACK_KING_SIDE,
-					})
+					moves = append(moves, NewCastlingMove(E8, G8, BLACK_KING, BLACK_KING_SIDE))
 				}
 			}
 		}
