@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -112,6 +113,13 @@ func main() {
 					&cli.BoolFlag{Name: "black", Aliases: []string{"b"}, Usage: "black will be played by an engine"},
 				},
 				Action: runCli,
+			},
+			{
+				Name:  "ui",
+				Usage: "play the game on a graphic UI",
+				Action: func(ctx *cli.Context) error {
+					return errors.New("ui not implemented")
+				},
 			},
 		},
 	}
