@@ -277,7 +277,7 @@ func NewStartingBoard() *Board {
 		blackQueens:     0x1000000000000000,
 		blackKing:       0x0800000000000000,
 		turn:            WHITE,
-		castlingRights:  0,
+		castlingRights:  CastlingRights(WHITE_KING_SIDE | WHITE_QUEEN_SIDE | BLACK_KING_SIDE | BLACK_QUEEN_SIDE),
 		enPassantSquare: 0,
 		whiteOccupied:   0x000000000000ffff,
 		blackOccupied:   0xffff000000000000,
