@@ -25,7 +25,7 @@ func init() {
 	whitesTurnHash = random()
 }
 
-func ZobristHash(b *Board) Bitboard {
+func ZobristHash(b *Board) uint64 {
 	hash := Bitboard(0)
 
 	// castling rights
@@ -58,5 +58,5 @@ func ZobristHash(b *Board) Bitboard {
 	if b.Turn() == WHITE {
 		hash ^= whitesTurnHash
 	}
-	return hash
+	return uint64(hash)
 }
