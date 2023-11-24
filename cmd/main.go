@@ -4,19 +4,21 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
 	gochess "gochess/internal"
 
 	"github.com/inancgumus/screen"
+	"github.com/urfave/cli/v2"
 )
 
-func main() {
-	flip := flag.Bool("flip", false, "flip the board at Black's turn")
-	eval := flag.Bool("eval", false, "show the evaluation bar")
-	whiteEngine := flag.Bool("w", false, "white will be played by an engine")
-	blackEngine := flag.Bool("b", false, "black will be played by an engine")
+func runCli(ctx *cli.Context) error {
+	flip := ctx.Bool("flip")
+	eval := ctx.Bool("eval")
+	whiteEngine := ctx.Bool("whtie")
+	blackEngine := ctx.Bool("black")
 	flag.Parse()
 
 	screen.Clear()
@@ -30,13 +32,13 @@ func main() {
 		screen.MoveTopLeft()
 		fmt.Println(gochess.Banner())
 		fmt.Println()
-		if *flip && g.Board().Turn() == gochess.BLACK {
+		if flip && g.Board().Turn() == gochess.BLACK {
 			fmt.Println(g.VisualizeFlipped())
 		} else {
 			fmt.Println(g.Visualize())
 		}
 
-		if *eval {
+		if eval {
 			e := gochess.Evaluate(g.Board())
 			bar := gochess.EvaluationBar(e, 18)
 			fmt.Println()
@@ -53,7 +55,7 @@ func main() {
 
 		fmt.Printf("\033[0;31m%s\033[0;39m\n", errMsg)
 
-		playerTurn := (g.Turn() == gochess.WHITE && !*whiteEngine) || (g.Turn() == gochess.BLACK && !*blackEngine)
+		playerTurn := (g.Turn() == gochess.WHITE && !whiteEngine) || (g.Turn() == gochess.BLACK && !blackEngine)
 		if playerTurn {
 			fmt.Print("Your move: ")
 
@@ -92,4 +94,29 @@ func main() {
 
 	fmt.Print("Press Enter key to exit...")
 	reader.ReadByte()
+	return nil
+}
+
+func main() {
+	app := &cli.App{
+		Name:  "gochess",
+		Usage: "gochess",
+		Commands: []*cli.Command{
+			{
+				Name:  "cli",
+				Usage: "play the game on CLI",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{Name: "flip", Aliases: []string{"f"}, Usage: "flip the board at Black's turn"},
+					&cli.BoolFlag{Name: "eval", Aliases: []string{"e"}, Usage: "show the evaluation bar"},
+					&cli.BoolFlag{Name: "white", Aliases: []string{"w"}, Usage: "white will be played by an engine"},
+					&cli.BoolFlag{Name: "black", Aliases: []string{"b"}, Usage: "black will be played by an engine"},
+				},
+				Action: runCli,
+			},
+		},
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
