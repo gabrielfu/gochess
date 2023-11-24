@@ -1,15 +1,8 @@
 package gochess
 
 import (
-	"os"
 	"testing"
 )
-
-func TestMain(m *testing.M) {
-	InitMovesTables()
-	code := m.Run()
-	os.Exit(code)
-}
 
 func TestIsSquareAttacked(t *testing.T) {
 	b := NewStartingBoard()

@@ -9,8 +9,8 @@ var BlackPawnAttacksTable [64]Bitboard
  * Non sliding pieces
  */
 
-// InitMovesTables initializes the moves tables for non-sliding pieces (Kings, Knights, Pawns).
-func InitMovesTables() {
+// initializes the moves tables for non-sliding pieces (Kings, Knights, Pawns).
+func init() {
 	initKingMovesTable()
 	initKnightMovesTable()
 	initWhitePawnAttacksTable()

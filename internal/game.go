@@ -11,8 +11,6 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	InitMovesTables()
-
 	return &Game{
 		board:   NewStartingBoard(),
 		history: []*Move{},
