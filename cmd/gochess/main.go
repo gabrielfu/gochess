@@ -78,8 +78,8 @@ func main() {
 			fmt.Print("Engine is thinking...")
 			result := gochess.Search(g.Board(), 4)
 			if result.Move() == nil {
-				errMsg = "Engine could not find a move!"
-				continue
+				errMsg = "Internal Error: Engine could not find a move!"
+				break
 			}
 			fmt.Println(result.Move().ToSAN(g.Board()))
 			g.Move(result.Move())
