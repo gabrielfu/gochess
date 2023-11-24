@@ -33,7 +33,6 @@ func main() {
 		if err := g.Move(move); err != nil {
 			panic(err)
 		}
-		g.Move(move)
 		i++
 	}
 }
