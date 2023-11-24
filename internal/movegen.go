@@ -102,7 +102,6 @@ func calcKnightMoves(from Square) Bitboard {
 }
 
 func calcWhitePawnAttacks(from Square) Bitboard {
-	// TODO: Need to add en passant
 	moves := Bitboard(0)
 	if from.Rank() == R8 {
 		return moves
@@ -118,7 +117,6 @@ func calcWhitePawnAttacks(from Square) Bitboard {
 }
 
 func calcBlackPawnAttacks(from Square) Bitboard {
-	// TODO: Need to add en passant
 	moves := Bitboard(0)
 	if from.Rank() == R1 {
 		return moves
