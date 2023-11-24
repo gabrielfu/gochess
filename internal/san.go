@@ -24,6 +24,14 @@ var pieceTypeToSAN = map[PieceType]string{
 	KING:   "K",
 }
 
+func MustParseSAN(san string, b *Board) *Move {
+	move, err := ParseSAN(san, b)
+	if err != nil {
+		panic(err)
+	}
+	return move
+}
+
 func ParseSAN(san string, b *Board) (*Move, error) {
 	// remove check and mate and brilliant symbols
 	san = regexp.MustCompile(`([+#]?[!?]{0,2})$`).ReplaceAllString(san, "")
