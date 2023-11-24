@@ -13,6 +13,7 @@ import (
 
 func main() {
 	flip := flag.Bool("flip", false, "flip the board at Black's turn")
+	eval := flag.Bool("eval", false, "flip the board at Black's turn")
 	flag.Parse()
 
 	screen.Clear()
@@ -29,6 +30,13 @@ func main() {
 		} else {
 			fmt.Println(g.Visualize())
 		}
+
+		if *eval {
+			e := gochess.Evaluate(g.Board())
+			fmt.Println()
+			fmt.Printf("Evaluation: %.2f\n", float32(e)/100)
+		}
+
 		fmt.Println()
 		fmt.Println(g.PGN())
 

@@ -1,7 +1,5 @@
 package gochess
 
-import "fmt"
-
 var BASE_VALUES = map[Piece]int{
 	WHITE_PAWN:   100,
 	WHITE_KNIGHT: 320,
@@ -146,7 +144,6 @@ func Evaluate(b *Board) int {
 	for _, piece := range ALL_PIECES {
 		bb := b.GetBbForPiece(piece)
 		for _, sq := range bb.Squares() {
-			fmt.Println(piece.Symbol(), sq)
 			eval += BASE_VALUES[piece] + lookupAdj(piece, sq)
 		}
 	}
