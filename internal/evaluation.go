@@ -1,5 +1,9 @@
 package gochess
 
+import (
+	"math"
+)
+
 var BASE_VALUES = map[Piece]int{
 	WHITE_PAWN:   100,
 	WHITE_KNIGHT: 320,
@@ -14,6 +18,11 @@ var BASE_VALUES = map[Piece]int{
 	BLACK_QUEEN:  -900,
 	BLACK_KING:   -5000,
 }
+
+const (
+	MAX_EVAL = 100000
+	MIN_EVAL = -100000
+)
 
 var PAWN_W_ADJ = []int{
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -148,4 +157,43 @@ func Evaluate(b *Board) int {
 		}
 	}
 	return eval
+}
+
+func EvaluationBar(eval int, width int) string {
+	var rescaled float64
+	if eval == MAX_EVAL {
+		rescaled = 1
+	} else if eval == MIN_EVAL {
+		rescaled = 0
+	} else {
+		pad := 1 / float64(width)
+		if eval > 640 {
+			rescaled = 1
+		} else if eval < -640 {
+			rescaled = 0
+		} else {
+			absEval := math.Abs(float64(eval))
+			rescaled = math.Log10(absEval/100+1)/2.2 + 0.5
+			if eval < 0 {
+				rescaled = 1 - rescaled
+			}
+		}
+		// transform rescale from [0, 1] to [pad, 1-pad]
+		rescaled = rescaled*(1-pad*2) + pad
+	}
+	var rounded int
+	if eval >= 0 {
+		rounded = int(math.Floor(rescaled * float64(width)))
+	} else {
+		rounded = int(math.Ceil(rescaled * float64(width)))
+	}
+	out := ""
+	for i := 0; i < width; i++ {
+		if i < rounded {
+			out += "\u2588"
+		} else {
+			out += "\u2591"
+		}
+	}
+	return out
 }

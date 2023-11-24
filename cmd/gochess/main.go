@@ -33,8 +33,9 @@ func main() {
 
 		if *eval {
 			e := gochess.Evaluate(g.Board())
+			bar := gochess.EvaluationBar(e, 18)
 			fmt.Println()
-			fmt.Printf("Evaluation: %.2f\n", float32(e)/100)
+			fmt.Printf("%s %.2f\n", bar, float32(e)/100)
 		}
 
 		fmt.Println()
