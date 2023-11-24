@@ -614,18 +614,29 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 			// castling
 			if p == WHITE_KING && from == E1 {
 				if b.castlingRights.Has(WHITE_QUEEN_SIDE) {
-					// TODO: check castling path condition
-					moves = append(moves, NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE))
+					castlingMove := NewCastlingMove(E1, C1, WHITE_KING, WHITE_QUEEN_SIDE)
+					if isCastlingValid(castlingMove, b) {
+						moves = append(moves, castlingMove)
+					}
 				}
 				if b.castlingRights.Has(WHITE_KING_SIDE) {
-					moves = append(moves, NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE))
+					castlingMove := NewCastlingMove(E1, G1, WHITE_KING, WHITE_KING_SIDE)
+					if isCastlingValid(castlingMove, b) {
+						moves = append(moves, castlingMove)
+					}
 				}
 			} else if p == BLACK_KING && from == E8 {
 				if b.castlingRights.Has(BLACK_QUEEN_SIDE) {
-					moves = append(moves, NewCastlingMove(E8, C8, BLACK_KING, BLACK_QUEEN_SIDE))
+					castlingMove := NewCastlingMove(E8, C8, BLACK_KING, BLACK_QUEEN_SIDE)
+					if isCastlingValid(castlingMove, b) {
+						moves = append(moves, castlingMove)
+					}
 				}
 				if b.castlingRights.Has(BLACK_KING_SIDE) {
-					moves = append(moves, NewCastlingMove(E8, G8, BLACK_KING, BLACK_KING_SIDE))
+					castlingMove := NewCastlingMove(E8, G8, BLACK_KING, BLACK_KING_SIDE)
+					if isCastlingValid(castlingMove, b) {
+						moves = append(moves, castlingMove)
+					}
 				}
 			}
 		}
