@@ -463,9 +463,11 @@ func (b *Board) makeMove(move *Move) error {
 	if b.SquareIsEnpassant(move.To()) {
 		// en passant captures
 		if piece == WHITE_PAWN {
+			move.SetCaptured(BLACK_PAWN)
 			targetBb := b.GetBbForPiece(BLACK_PAWN)
 			*targetBb &^= (1 << SquareFromFileRank(move.To().File(), R5))
 		} else if piece == BLACK_PAWN {
+			move.SetCaptured(WHITE_PAWN)
 			targetBb := b.GetBbForPiece(WHITE_PAWN)
 			*targetBb &^= (1 << SquareFromFileRank(move.To().File(), R4))
 		}
@@ -473,6 +475,7 @@ func (b *Board) makeMove(move *Move) error {
 		// other captures
 		target := b.GetPieceAtSquare(move.To())
 		if target != EMPTY {
+			move.SetCaptured(target)
 			targetBb := b.GetBbForPiece(target)
 			if targetBb == nil || *targetBb == 0 {
 				return fmt.Errorf("Invalid target piece: " + target.Symbol())

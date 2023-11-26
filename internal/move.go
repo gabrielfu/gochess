@@ -6,6 +6,7 @@ type Move struct {
 	piece     Piece
 	castle    Castle
 	promotion Piece
+	captured  Piece
 }
 
 func NewMove(from Square, to Square, piece Piece) *Move {
@@ -15,6 +16,7 @@ func NewMove(from Square, to Square, piece Piece) *Move {
 		piece:     piece,
 		castle:    0,
 		promotion: EMPTY,
+		captured:  EMPTY,
 	}
 }
 
@@ -25,6 +27,7 @@ func NewCastlingMove(from Square, to Square, piece Piece, castle Castle) *Move {
 		piece:     piece,
 		castle:    castle,
 		promotion: EMPTY,
+		captured:  EMPTY,
 	}
 }
 
@@ -85,6 +88,14 @@ func (m *Move) Promotion() Piece {
 
 func (m *Move) SetPromotion(p Piece) {
 	m.promotion = p
+}
+
+func (m *Move) Captured() Piece {
+	return m.captured
+}
+
+func (m *Move) SetCaptured(p Piece) {
+	m.captured = p
 }
 
 func FilterMoves(moves []*Move, filter func(*Move) bool) []*Move {

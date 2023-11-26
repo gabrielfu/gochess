@@ -49,8 +49,14 @@ func runCli(ctx *cli.Context) error {
 		fmt.Println()
 		fmt.Println(g.PGN())
 
-		if g.Ended() {
-			fmt.Printf("\033[0;32mGame over! %s won.\033[0;39m\n", g.Winner())
+		if g.Status() == gochess.WhiteWon {
+			fmt.Printf("\033[0;32mGame over! White won.\033[0;39m\n")
+			break
+		} else if g.Status() == gochess.BlackWon {
+			fmt.Printf("\033[0;32mGame over! Black won.\033[0;39m\n")
+			break
+		} else if g.Status() == gochess.Draw {
+			fmt.Printf("\033[0;32mGame over! Draw.\033[0;39m\n")
 			break
 		}
 
