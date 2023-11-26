@@ -611,11 +611,11 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 				toBb = GetKnightMoves(Square(from)) & allowedTos
 			case WHITE_PAWN:
 				attackBb := GetWhitePawnAttacks(Square(from)) & (enemyOccupied | b.enPassantSquare)
-				moveBb := (GetWhitePawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				moveBb := (GetWhitePawnMoves(Square(from), b.allOccupied) & allowedTos) &^ enemyOccupied
 				toBb = attackBb | moveBb
 			case BLACK_PAWN:
 				attackBb := GetBlackPawnAttacks(Square(from)) & (enemyOccupied | b.enPassantSquare)
-				moveBb := (GetBlackPawnMoves(Square(from)) & allowedTos) &^ enemyOccupied
+				moveBb := (GetBlackPawnMoves(Square(from), b.allOccupied) & allowedTos) &^ enemyOccupied
 				toBb = attackBb | moveBb
 			case WHITE_BISHOP, BLACK_BISHOP:
 				toBb = GetBishopMoves(Square(from), b.allOccupied) & allowedTos

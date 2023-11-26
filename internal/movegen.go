@@ -131,7 +131,7 @@ func calcBlackPawnAttacks(from Square) Bitboard {
 	return moves
 }
 
-func calcWhitePawnMoves(from Square) Bitboard {
+func calcWhitePawnMoves(from Square, occupany Bitboard) Bitboard {
 	moves := Bitboard(0)
 	if from.Rank() == R8 {
 		return moves
@@ -139,13 +139,13 @@ func calcWhitePawnMoves(from Square) Bitboard {
 	if from <= A7 {
 		moves |= 1 << (from + 8) // UP
 	}
-	if from.Rank() == R2 {
+	if from.Rank() == R2 && occupany&(1<<(from+8)) == 0 {
 		moves |= 1 << (from + 16) // UP 2
 	}
 	return moves
 }
 
-func calcBlackPawnMoves(from Square) Bitboard {
+func calcBlackPawnMoves(from Square, occupany Bitboard) Bitboard {
 	moves := Bitboard(0)
 	if from.Rank() == R1 {
 		return moves
@@ -153,7 +153,7 @@ func calcBlackPawnMoves(from Square) Bitboard {
 	if from >= A2 {
 		moves |= 1 << (from - 8) // DOWN
 	}
-	if from.Rank() == R7 {
+	if from.Rank() == R7 && occupany&(1<<(from-8)) == 0 {
 		moves |= 1 << (from - 16) // DOWN 2
 	}
 	return moves
@@ -175,12 +175,12 @@ func GetBlackPawnAttacks(from Square) Bitboard {
 	return BlackPawnAttacksTable[from]
 }
 
-func GetWhitePawnMoves(from Square) Bitboard {
-	return calcWhitePawnMoves(from)
+func GetWhitePawnMoves(from Square, occupany Bitboard) Bitboard {
+	return calcWhitePawnMoves(from, occupany)
 }
 
-func GetBlackPawnMoves(from Square) Bitboard {
-	return calcBlackPawnMoves(from)
+func GetBlackPawnMoves(from Square, occupany Bitboard) Bitboard {
+	return calcBlackPawnMoves(from, occupany)
 }
 
 /*

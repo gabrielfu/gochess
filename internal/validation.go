@@ -179,12 +179,12 @@ func isMovable(move *Move, b *Board) bool {
 		}
 	case WHITE_PAWN:
 		if !GetWhitePawnAttacks(move.From()).SquareIsSet(move.To()) &&
-			!GetWhitePawnMoves(move.From()).SquareIsSet(move.To()) {
+			!GetWhitePawnMoves(move.From(), b.allOccupied).SquareIsSet(move.To()) {
 			return false
 		}
 	case BLACK_PAWN:
 		if !GetBlackPawnAttacks(move.From()).SquareIsSet(move.To()) &&
-			!GetBlackPawnMoves(move.From()).SquareIsSet(move.To()) {
+			!GetBlackPawnMoves(move.From(), b.allOccupied).SquareIsSet(move.To()) {
 			return false
 		}
 	case WHITE_BISHOP, BLACK_BISHOP:

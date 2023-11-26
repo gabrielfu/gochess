@@ -52,7 +52,7 @@ func TestCalcWhitePawnMoves(t *testing.T) {
 		{E5, 8796093022208},
 	}
 	for _, tt := range tests {
-		moves := calcWhitePawnMoves(tt.sq)
+		moves := calcWhitePawnMoves(tt.sq, Bitboard(0))
 		if moves != tt.expected {
 			t.Errorf("Expected %v, got %v", tt.expected, moves)
 		}
@@ -90,7 +90,7 @@ func TestCalcBlackPawnMoves(t *testing.T) {
 		{E5, 134217728},
 	}
 	for _, tt := range tests {
-		moves := calcBlackPawnMoves(tt.sq)
+		moves := calcBlackPawnMoves(tt.sq, Bitboard(0))
 		if moves != tt.expected {
 			t.Errorf("Expected %v, got %v", tt.expected, moves)
 		}
