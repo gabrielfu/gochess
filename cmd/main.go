@@ -18,7 +18,7 @@ import (
 func runCli(ctx *cli.Context) error {
 	flip := ctx.Bool("flip")
 	eval := ctx.Bool("eval")
-	whiteEngine := ctx.Bool("whtie")
+	whiteEngine := ctx.Bool("white")
 	blackEngine := ctx.Bool("black")
 	flag.Parse()
 
