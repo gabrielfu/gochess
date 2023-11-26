@@ -629,7 +629,22 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 
 			// For each "to" square
 			for _, to := range toBb.Squares() {
-				moves = append(moves, NewMove(Square(from), Square(to), p))
+				// promotion
+				if p == WHITE_PAWN && to.Rank() == R8 {
+					for _, promo := range []Piece{WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN} {
+						move := NewMove(Square(from), Square(to), p)
+						move.SetPromotion(promo)
+						moves = append(moves, move)
+					}
+				} else if p == BLACK_PAWN && to.Rank() == R1 {
+					for _, promo := range []Piece{BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN} {
+						move := NewMove(Square(from), Square(to), p)
+						move.SetPromotion(promo)
+						moves = append(moves, move)
+					}
+				} else {
+					moves = append(moves, NewMove(Square(from), Square(to), p))
+				}
 			}
 
 			// castling
