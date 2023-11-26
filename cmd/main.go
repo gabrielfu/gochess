@@ -64,7 +64,8 @@ func runCli(ctx *cli.Context) error {
 
 		playerTurn := (g.Turn() == gochess.WHITE && !whiteEngine) || (g.Turn() == gochess.BLACK && !blackEngine)
 		if playerTurn {
-			fmt.Print("Your move: ")
+			fmt.Println("Input a move in Standard Algebraic Notation, or 'undo' to undo a move.")
+			fmt.Printf("Your move (%s): ", g.Turn())
 
 			input, err := reader.ReadString('\n')
 			if err != nil {
@@ -72,6 +73,20 @@ func runCli(ctx *cli.Context) error {
 				continue
 			}
 			input = input[:len(input)-1]
+
+			if input == "undo" {
+				// undo a full move
+				// undo twice because the last move was the opponent's
+				if err := g.Undo(); err != nil {
+					errMsg = err.Error()
+					continue
+				}
+
+				if err := g.Undo(); err != nil {
+					errMsg = err.Error()
+				}
+				continue
+			}
 
 			move, err := gochess.ParseSAN(input, g.Board())
 			if err != nil {
@@ -99,6 +114,7 @@ func runCli(ctx *cli.Context) error {
 		errMsg = ""
 	}
 
+	fmt.Printf("\033[0;31m%s\033[0;39m\n", errMsg)
 	fmt.Print("Press Enter key to exit...")
 	reader.ReadByte()
 	return nil

@@ -1,6 +1,9 @@
 package gochess
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type Status string
 
@@ -23,7 +26,7 @@ type Game struct {
 	halfMoveClock int
 	moveCount     int
 	status        Status
-	pgn           string
+	pgns          []string
 }
 
 func NewGame() *Game {
@@ -31,11 +34,11 @@ func NewGame() *Game {
 	return &Game{
 		board:         b,
 		moves:         []*Move{},
-		positions:     []*Board{b},
+		positions:     []*Board{b.Copy()},
 		halfMoveClock: 0,
 		moveCount:     0,
 		status:        InProgress,
-		pgn:           "",
+		pgns:          []string{},
 	}
 }
 
@@ -85,7 +88,8 @@ func (g *Game) Move(move *Move) error {
 	if g.Turn() == WHITE {
 		turnNotation = fmt.Sprintf("%d. ", g.MoveCount()+1)
 	}
-	g.pgn += turnNotation + san + " "
+	pgn := g.PGN()
+	pgn += turnNotation + san + " "
 
 	err := g.Board().Move(move)
 	if err != nil {
@@ -100,9 +104,29 @@ func (g *Game) Move(move *Move) error {
 		} else {
 			g.status = BlackWon
 		}
-		g.pgn += g.Status().String()
+		pgn += g.Status().String()
 	}
+	g.pgns = append(g.pgns, pgn)
 	return err
+}
+
+func (g *Game) Undo() error {
+	if len(g.moves) == 0 {
+		return errors.New("no moves to undo")
+	}
+
+	g.moves = g.moves[:len(g.moves)-1]
+	g.positions = g.positions[:len(g.positions)-1]
+	g.pgns = g.pgns[:len(g.pgns)-1]
+	g.halfMoveClock = max(g.halfMoveClock-1, 0)
+	if g.Turn() == BLACK {
+		g.moveCount -= 1
+	}
+	g.status = InProgress
+
+	board := g.positions[len(g.positions)-1]
+	g.SetBoard(board.Copy())
+	return nil
 }
 
 func (g *Game) Turn() Color {
@@ -130,5 +154,8 @@ func (g *Game) Status() Status {
 }
 
 func (g *Game) PGN() string {
-	return g.pgn
+	if len(g.pgns) == 0 {
+		return ""
+	}
+	return g.pgns[len(g.pgns)-1]
 }
