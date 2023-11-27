@@ -51,7 +51,7 @@ func ZobristHash(b *Board) uint64 {
 	}
 
 	// en passant
-	for _, sq := range b.enPassantSquare.Squares() {
+	for _, sq := range b.EnPassantSquare().Squares() {
 		hash ^= enPassantHashes[int(sq)]
 	}
 
