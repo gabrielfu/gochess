@@ -693,7 +693,7 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 	return moves
 }
 
-var LegalMovesCache = make(map[uint64][]*Move)
+var legalMovesCache = make(map[uint64][]*Move)
 
 func (b *Board) legalMoves() []*Move {
 	var candidatePieces []Piece
@@ -708,11 +708,11 @@ func (b *Board) legalMoves() []*Move {
 
 // LegalMoves returns all legal moves for the current player.
 func (b *Board) LegalMoves() []*Move {
-	if moves, ok := LegalMovesCache[ZobristHash(b)]; ok {
+	if moves, ok := legalMovesCache[ZobristHash(b)]; ok {
 		return moves
 	}
 	moves := b.legalMoves()
-	LegalMovesCache[ZobristHash(b)] = moves
+	legalMovesCache[ZobristHash(b)] = moves
 	return moves
 }
 
