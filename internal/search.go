@@ -65,7 +65,7 @@ func alphabeta(b *Board, depth int, alpha int, beta int) (int, *Move) {
 			return Evaluate(b, WhiteWon), nil
 		}
 	}
-	if b.IsInStalemate() {
+	if b.IsInStalemate() || b.IsInsufficientMaterial() {
 		return Evaluate(b, Draw), nil
 	}
 

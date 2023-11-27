@@ -21,10 +21,11 @@ func (s Status) String() string {
 type DrawReason string
 
 const (
-	NotDrawn                  DrawReason = ""
-	DrawByStalemate           DrawReason = "Drawn by stalemate"
-	DrawByThreefoldRepetition DrawReason = "Drawn by threefold repetition"
-	DrawByFiftyMove           DrawReason = "Drawn by fifty-move rule"
+	NotDrawn                   DrawReason = ""
+	DrawByStalemate            DrawReason = "Drawn by stalemate"
+	DrawByThreefoldRepetition  DrawReason = "Drawn by threefold repetition"
+	DrawByFiftyMove            DrawReason = "Drawn by fifty-move rule"
+	DrawByInsufficientMaterial DrawReason = "Drawn by insufficient material"
 )
 
 type Game struct {
@@ -64,6 +65,7 @@ func (g *Game) Board() *Board {
 
 func (g *Game) SetBoard(board *Board) {
 	g.board = board
+	g.updateStatus()
 }
 
 // LegalMoves returns all legal moves for the current player.
@@ -85,6 +87,34 @@ func (g *Game) MoveSAN(san string) error {
 		return err
 	}
 	return g.Move(move)
+}
+
+func (g *Game) updateStatus() {
+	if g.Board().IsInCheckmate() {
+		winner := 1 - g.Turn()
+		if winner == WHITE {
+			g.status = WhiteWon
+		} else {
+			g.status = BlackWon
+		}
+	}
+	if g.Board().IsInStalemate() {
+		g.status = Draw
+		g.drawReason = DrawByStalemate
+	}
+	if g.Board().IsInsufficientMaterial() {
+		g.status = Draw
+		g.drawReason = DrawByInsufficientMaterial
+	}
+	if g.halfMoveClock >= 100 {
+		g.status = Draw
+		g.drawReason = DrawByFiftyMove
+	}
+	zobrist := ZobristHash(g.Board())
+	if g.repetitionTable[zobrist] >= 3 {
+		g.status = Draw
+		g.drawReason = DrawByThreefoldRepetition
+	}
 }
 
 // Move executes the given move on the board.
@@ -117,31 +147,10 @@ func (g *Game) Move(move *Move) error {
 	zobrist := ZobristHash(g.Board())
 	g.repetitionTable[zobrist] += 1
 
-	if g.Board().IsInCheckmate() {
-		winner := 1 - g.Turn()
-		if winner == WHITE {
-			g.status = WhiteWon
-		} else {
-			g.status = BlackWon
-		}
-		pgn += g.Status().String()
+	g.updateStatus()
+	if g.status != InProgress {
+		g.pgns = append(g.pgns, pgn)
 	}
-	if g.Board().IsInStalemate() {
-		g.status = Draw
-		g.drawReason = DrawByStalemate
-		pgn += g.Status().String()
-	}
-	if g.halfMoveClock >= 100 {
-		g.status = Draw
-		g.drawReason = DrawByFiftyMove
-		pgn += g.Status().String()
-	}
-	if g.repetitionTable[zobrist] >= 3 {
-		g.status = Draw
-		g.drawReason = DrawByThreefoldRepetition
-		pgn += g.Status().String()
-	}
-	g.pgns = append(g.pgns, pgn)
 	return err
 }
 

@@ -15,6 +15,14 @@ func (bb Bitboard) BinaryBoard() string {
 	return out[:len(out)-1]
 }
 
+func (bb Bitboard) IsEmpty() bool {
+	return bb == 0
+}
+
+func (bb Bitboard) IsSingular() bool {
+	return bb&(bb-1) == 0
+}
+
 // Squares returns a slice of squares that are set in the bitboard.
 func (bb Bitboard) Squares() []Square {
 	squares := []Square{}
@@ -127,6 +135,9 @@ var SQUARE_NAMES = []string{
 func (sq Square) String() string {
 	return SQUARE_NAMES[sq]
 }
+
+var LIGHT_SQUARES = Bitboard(0x55aa55aa55aa55aa)
+var DARK_SQUARES = Bitboard(0xaa55aa55aa55aa55)
 
 type File int
 
@@ -581,6 +592,38 @@ func (b *Board) IsInCheckmate() bool {
 
 func (b *Board) IsInStalemate() bool {
 	return !b.IsInCheck() && (len(b.LegalMoves()) == 0)
+}
+
+func (b *Board) IsInsufficientMaterial() bool {
+	if b.whitePawns != 0 || b.blackPawns != 0 || b.whiteRooks != 0 || b.blackRooks != 0 || b.whiteQueens != 0 || b.blackQueens != 0 {
+		return false
+	}
+
+	bishops := b.whiteBishops | b.blackBishops
+	knights := b.whiteKnights | b.blackKnights
+
+	numBishops := len(bishops.Squares())
+	numKnights := len(knights.Squares())
+
+	if numBishops == 0 && numKnights == 0 {
+		// K v. K
+		return true
+	} else if numBishops == 1 && numKnights == 0 {
+		// KB v. K
+		return true
+	} else if numBishops == 0 && numKnights == 1 {
+		// KN v. K
+		return true
+	} else if numBishops == 0 && numKnights == 2 && b.whiteKnights.IsSingular() && b.blackKnights.IsSingular() {
+		// KNN v. K
+		// theoretically not drawn with a blender, but we'll consider it drawn
+		return true
+	} else if numKnights == 0 && numBishops == 2 && b.whiteBishops.IsSingular() && b.blackBishops.IsSingular() {
+		// KB v. KB
+		// if bishops are opposite colours, theoretically not drawn with a blunder, but we'll consider it drawn
+		return true
+	}
+	return false
 }
 
 // LegalMoves returns all legal moves for the current player and specified candidate pieces.
