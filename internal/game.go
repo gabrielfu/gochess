@@ -179,10 +179,12 @@ func (g *Game) Turn() Color {
 	return g.Board().Turn()
 }
 
+// MoveCount returns the number of full moves that have been played.
 func (g *Game) MoveCount() int {
 	return g.moveCount
 }
 
+// HalfMoveClock returns the number of half moves since the last capture or pawn move.
 func (g *Game) HalfMoveClock() int {
 	return g.halfMoveClock
 }
