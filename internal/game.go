@@ -141,6 +141,8 @@ func (g *Game) Move(move *Move) error {
 	turnNotation := ""
 	if g.Turn() == WHITE {
 		turnNotation = fmt.Sprintf("%d. ", g.MoveCount())
+	} else if g.Turn() == BLACK && len(g.pgns) == 0 {
+		turnNotation = fmt.Sprintf("%d... ", g.MoveCount()-1)
 	}
 	pgn := g.PGN()
 	pgn += turnNotation + san + " "
