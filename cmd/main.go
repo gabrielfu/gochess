@@ -102,12 +102,12 @@ func runCli(ctx *cli.Context) error {
 			fmt.Print("Engine is thinking...")
 			depth := 10
 			switch g.MoveCount() {
-			case 0:
-				depth = 2
 			case 1:
+				depth = 2
+			case 2, 3:
 				depth = 4
-			case 2:
-				depth = 6
+			case 4, 5:
+				depth = 7
 			default:
 			}
 			result := gochess.Search(g.Board(), depth)
