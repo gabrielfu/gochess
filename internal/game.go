@@ -149,8 +149,9 @@ func (g *Game) Move(move *Move) error {
 
 	g.updateStatus()
 	if g.status != InProgress {
-		g.pgns = append(g.pgns, pgn)
+		pgn += g.status.String()
 	}
+	g.pgns = append(g.pgns, pgn)
 	return err
 }
 
