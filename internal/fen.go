@@ -176,8 +176,7 @@ func ParseFEN(fen string) (*Game, error) {
 		return nil, err
 	}
 
-	g := NewGame()
-	g.SetBoard(b)
+	g := NewGameWithBoard(b)
 	g.SetHalfMoveClock(halfMoveClock)
 	g.SetMoveCount(moveCount)
 	return g, nil

@@ -45,6 +45,10 @@ type Game struct {
 
 func NewGame() *Game {
 	b := NewStartingBoard()
+	return NewGameWithBoard(b)
+}
+
+func NewGameWithBoard(b *Board) *Game {
 	return &Game{
 		board:           b,
 		moves:           []*Move{},
@@ -57,6 +61,10 @@ func NewGame() *Game {
 		drawReason:      NotDrawn,
 		repetitionTable: map[uint64]uint32{},
 	}
+}
+
+func NewGameWithFEN(fen string) (*Game, error) {
+	return ParseFEN(fen)
 }
 
 func (g *Game) Board() *Board {
