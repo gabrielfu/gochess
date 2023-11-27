@@ -56,7 +56,7 @@ func runCli(ctx *cli.Context) error {
 			fmt.Printf("\033[0;32mGame over! Black won.\033[0;39m\n")
 			break
 		} else if g.Status() == gochess.Draw {
-			fmt.Printf("\033[0;32mGame over! Draw.\033[0;39m\n")
+			fmt.Printf("\033[0;32mGame over! %s.\033[0;39m\n", g.DrawReason())
 			break
 		}
 

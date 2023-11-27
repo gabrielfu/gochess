@@ -579,7 +579,7 @@ func (b *Board) IsInCheckmate() bool {
 	return b.IsInCheck() && (len(b.LegalMoves()) == 0)
 }
 
-func (b *Board) IsStalemate() bool {
+func (b *Board) IsInStalemate() bool {
 	return !b.IsInCheck() && (len(b.LegalMoves()) == 0)
 }
 

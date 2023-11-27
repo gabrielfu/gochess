@@ -18,6 +18,15 @@ func (s Status) String() string {
 	return string(s)
 }
 
+type DrawReason string
+
+const (
+	NotDrawn                  DrawReason = ""
+	DrawByStalemate           DrawReason = "Drawn by stalemate"
+	DrawByThreefoldRepetition DrawReason = "Drawn by threefold repetition"
+	DrawByFiftyMove           DrawReason = "Drawn by fifty-move rule"
+)
+
 type Game struct {
 	board *Board
 
@@ -28,19 +37,24 @@ type Game struct {
 	moveCount      int
 	status         Status
 	pgns           []string
+	drawReason     DrawReason
+
+	repetitionTable map[uint64]uint32 // Zobrist hash -> count to detect threefold repetition
 }
 
 func NewGame() *Game {
 	b := NewStartingBoard()
 	return &Game{
-		board:          b,
-		moves:          []*Move{},
-		positions:      []*Board{b.Copy()},
-		halfMoveClocks: []int{0},
-		halfMoveClock:  0,
-		moveCount:      0,
-		status:         InProgress,
-		pgns:           []string{},
+		board:           b,
+		moves:           []*Move{},
+		positions:       []*Board{b.Copy()},
+		halfMoveClocks:  []int{0},
+		halfMoveClock:   0,
+		moveCount:       0,
+		status:          InProgress,
+		pgns:            []string{},
+		drawReason:      NotDrawn,
+		repetitionTable: map[uint64]uint32{},
 	}
 }
 
@@ -100,6 +114,9 @@ func (g *Game) Move(move *Move) error {
 	g.positions = append(g.positions, g.Board().Copy())
 	g.halfMoveClocks = append(g.halfMoveClocks, g.halfMoveClock)
 
+	zobrist := ZobristHash(g.Board())
+	g.repetitionTable[zobrist] += 1
+
 	if g.Board().IsInCheckmate() {
 		winner := 1 - g.Turn()
 		if winner == WHITE {
@@ -109,10 +126,26 @@ func (g *Game) Move(move *Move) error {
 		}
 		pgn += g.Status().String()
 	}
+	if g.Board().IsInStalemate() {
+		g.status = Draw
+		g.drawReason = DrawByStalemate
+		pgn += g.Status().String()
+	}
+	if g.halfMoveClock >= 100 {
+		g.status = Draw
+		g.drawReason = DrawByFiftyMove
+		pgn += g.Status().String()
+	}
+	if g.repetitionTable[zobrist] >= 3 {
+		g.status = Draw
+		g.drawReason = DrawByThreefoldRepetition
+		pgn += g.Status().String()
+	}
 	g.pgns = append(g.pgns, pgn)
 	return err
 }
 
+// Undo undoes the last half move.
 func (g *Game) Undo() error {
 	if len(g.moves) == 0 {
 		return errors.New("no moves to undo")
@@ -155,6 +188,10 @@ func (g *Game) Positions() []*Board {
 
 func (g *Game) Status() Status {
 	return g.status
+}
+
+func (g *Game) DrawReason() DrawReason {
+	return g.drawReason
 }
 
 func (g *Game) PGN() string {
