@@ -576,10 +576,11 @@ func (b *Board) IsInCheck() bool {
 }
 
 func (b *Board) IsInCheckmate() bool {
-	if !b.IsInCheck() {
-		return false
-	}
-	return len(b.LegalMoves()) == 0
+	return b.IsInCheck() && (len(b.LegalMoves()) == 0)
+}
+
+func (b *Board) IsStalemate() bool {
+	return !b.IsInCheck() && (len(b.LegalMoves()) == 0)
 }
 
 // LegalMoves returns all legal moves for the current player and specified candidate pieces.
