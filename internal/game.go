@@ -35,7 +35,7 @@ type Game struct {
 	positions      []*Board
 	halfMoveClocks []int
 	halfMoveClock  int
-	moveCount      int
+	moveCount      int // number of full moves that have been played, starts at 1
 	status         Status
 	pgns           []string
 	drawReason     DrawReason
@@ -51,7 +51,7 @@ func NewGame() *Game {
 		positions:       []*Board{b.Copy()},
 		halfMoveClocks:  []int{0},
 		halfMoveClock:   0,
-		moveCount:       0,
+		moveCount:       1,
 		status:          InProgress,
 		pgns:            []string{},
 		drawReason:      NotDrawn,
@@ -132,7 +132,7 @@ func (g *Game) Move(move *Move) error {
 	san := move.ToSAN(g.Board())
 	turnNotation := ""
 	if g.Turn() == WHITE {
-		turnNotation = fmt.Sprintf("%d. ", g.MoveCount()+1)
+		turnNotation = fmt.Sprintf("%d. ", g.MoveCount())
 	}
 	pgn := g.PGN()
 	pgn += turnNotation + san + " "
