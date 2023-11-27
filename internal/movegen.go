@@ -150,7 +150,7 @@ func calcBlackPawnMoves(from Square, occupany Bitboard) Bitboard {
 	if from.Rank() == R1 {
 		return moves
 	}
-	if from >= A2 {
+	if from >= H2 {
 		moves |= 1 << (from - 8) // DOWN
 	}
 	if from.Rank() == R7 && occupany&(1<<(from-8)) == 0 {
