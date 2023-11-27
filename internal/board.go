@@ -464,6 +464,7 @@ func (b *Board) makeCastleMove(move *Move) error {
 	if err := b.makeMove(rookMove); err != nil {
 		return err
 	}
+	b.UnsetEnPassantSquare()
 	return nil
 }
 
@@ -555,11 +556,11 @@ func (b *Board) makeMove(move *Move) error {
 
 	// mark en passant squares
 	if piece == WHITE_PAWN && move.From().Rank() == R2 && move.To().Rank() == R4 {
-		b.enPassantSquare |= (1 << SquareFromFileRank(move.From().File(), R3))
+		b.SetEnPassantSquare(SquareFromFileRank(move.From().File(), R3))
 	} else if piece == BLACK_PAWN && move.From().Rank() == R7 && move.To().Rank() == R5 {
-		b.enPassantSquare |= (1 << SquareFromFileRank(move.From().File(), R6))
+		b.SetEnPassantSquare(SquareFromFileRank(move.From().File(), R6))
 	} else {
-		b.enPassantSquare = 0
+		b.UnsetEnPassantSquare()
 	}
 
 	return nil
@@ -786,4 +787,8 @@ func (b *Board) EnPassantSquare() Bitboard {
 
 func (b *Board) SetEnPassantSquare(sq Square) {
 	b.enPassantSquare = Bitboard(1 << sq)
+}
+
+func (b *Board) UnsetEnPassantSquare() {
+	b.enPassantSquare = Bitboard(0)
 }
