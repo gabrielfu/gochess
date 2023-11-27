@@ -27,8 +27,14 @@ func runCli(ctx *cli.Context) error {
 	var errMsg string
 
 	g := gochess.NewGame()
+	var evalScore int
 
 	for {
+		if eval {
+			sr := gochess.Search(g.Board(), 10)
+			evalScore = sr.Eval()
+		}
+
 		screen.Clear()
 		screen.MoveTopLeft()
 		fmt.Println(gochess.Banner())
@@ -40,10 +46,9 @@ func runCli(ctx *cli.Context) error {
 		}
 
 		if eval {
-			e := gochess.Evaluate(g.Board(), g.Status())
-			bar := gochess.EvaluationBar(e, 18)
+			bar := gochess.EvaluationBar(evalScore, 18)
 			fmt.Println()
-			fmt.Printf("%s %.2f\n", bar, float32(e)/100)
+			fmt.Printf("%s %.2f\n", bar, float32(evalScore)/100)
 		}
 
 		fmt.Println()
