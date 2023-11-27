@@ -2,6 +2,8 @@
 
 A toy chess game playable against human and engine on terminal.
 
+This project is inspired by [Sophia](https://github.com/bartekspitza/sophia) as a personal Go exercise.
+
 ## Usage
 
 ```shell
