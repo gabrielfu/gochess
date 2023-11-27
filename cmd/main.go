@@ -100,7 +100,17 @@ func runCli(ctx *cli.Context) error {
 			}
 		} else {
 			fmt.Print("Engine is thinking...")
-			result := gochess.Search(g.Board(), 10)
+			depth := 10
+			switch g.MoveCount() {
+			case 0:
+				depth = 2
+			case 1:
+				depth = 4
+			case 2:
+				depth = 6
+			default:
+			}
+			result := gochess.Search(g.Board(), depth)
 			if result.Move() == nil {
 				errMsg = "Internal Error: Engine could not find a move!"
 				break
