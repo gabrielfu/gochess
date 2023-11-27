@@ -29,16 +29,16 @@ func ZobristHash(b *Board) uint64 {
 	hash := Bitboard(0)
 
 	// castling rights
-	if b.castlingRights.Has(WHITE_KING_SIDE) {
+	if b.CastlingRights().Has(WHITE_KING_SIDE) {
 		hash ^= castlingHashes[WHITE_KING_SIDE]
 	}
-	if b.castlingRights.Has(WHITE_QUEEN_SIDE) {
+	if b.CastlingRights().Has(WHITE_QUEEN_SIDE) {
 		hash ^= castlingHashes[WHITE_QUEEN_SIDE]
 	}
-	if b.castlingRights.Has(BLACK_KING_SIDE) {
+	if b.CastlingRights().Has(BLACK_KING_SIDE) {
 		hash ^= castlingHashes[BLACK_KING_SIDE]
 	}
-	if b.castlingRights.Has(BLACK_QUEEN_SIDE) {
+	if b.CastlingRights().Has(BLACK_QUEEN_SIDE) {
 		hash ^= castlingHashes[BLACK_QUEEN_SIDE]
 	}
 
