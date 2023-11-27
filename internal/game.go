@@ -169,6 +169,7 @@ func (g *Game) Undo() error {
 		return errors.New("no moves to undo")
 	}
 
+	g.repetitionTable[ZobristHash(g.Board())] -= 1
 	g.moves = g.moves[:len(g.moves)-1]
 	g.positions = g.positions[:len(g.positions)-1]
 	g.pgns = g.pgns[:len(g.pgns)-1]
