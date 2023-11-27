@@ -323,6 +323,11 @@ func (b *Board) Turn() Color {
 	return b.turn
 }
 
+// NextTurn switches the turn to the next player.
+func (b *Board) NextTurn() {
+	b.turn = 1 - b.turn
+}
+
 func (b *Board) AddPieceToSquare(p Piece, sq Square) {
 	bb := b.GetBbForPiece(p)
 	if bb == nil {
