@@ -176,7 +176,7 @@ func (g *Game) Undo() error {
 	g.positions = g.positions[:len(g.positions)-1]
 	g.pgns = g.pgns[:len(g.pgns)-1]
 	g.halfMoveClocks = g.halfMoveClocks[:len(g.halfMoveClocks)-1]
-	if g.Turn() == BLACK {
+	if g.Turn() == WHITE {
 		g.moveCount -= 1
 	}
 	g.status = InProgress
