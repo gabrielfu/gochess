@@ -21,24 +21,26 @@ func (s Status) String() string {
 type Game struct {
 	board *Board
 
-	moves         []*Move
-	positions     []*Board
-	halfMoveClock int
-	moveCount     int
-	status        Status
-	pgns          []string
+	moves          []*Move
+	positions      []*Board
+	halfMoveClocks []int
+	halfMoveClock  int
+	moveCount      int
+	status         Status
+	pgns           []string
 }
 
 func NewGame() *Game {
 	b := NewStartingBoard()
 	return &Game{
-		board:         b,
-		moves:         []*Move{},
-		positions:     []*Board{b.Copy()},
-		halfMoveClock: 0,
-		moveCount:     0,
-		status:        InProgress,
-		pgns:          []string{},
+		board:          b,
+		moves:          []*Move{},
+		positions:      []*Board{b.Copy()},
+		halfMoveClocks: []int{0},
+		halfMoveClock:  0,
+		moveCount:      0,
+		status:         InProgress,
+		pgns:           []string{},
 	}
 }
 
@@ -96,6 +98,7 @@ func (g *Game) Move(move *Move) error {
 		return err
 	}
 	g.positions = append(g.positions, g.Board().Copy())
+	g.halfMoveClocks = append(g.halfMoveClocks, g.halfMoveClock)
 
 	if g.Board().IsInCheckmate() {
 		winner := 1 - g.Turn()
@@ -118,12 +121,13 @@ func (g *Game) Undo() error {
 	g.moves = g.moves[:len(g.moves)-1]
 	g.positions = g.positions[:len(g.positions)-1]
 	g.pgns = g.pgns[:len(g.pgns)-1]
-	g.halfMoveClock = max(g.halfMoveClock-1, 0)
+	g.halfMoveClocks = g.halfMoveClocks[:len(g.halfMoveClocks)-1]
 	if g.Turn() == BLACK {
 		g.moveCount -= 1
 	}
 	g.status = InProgress
 
+	g.halfMoveClock = g.halfMoveClocks[len(g.halfMoveClocks)-1]
 	board := g.positions[len(g.positions)-1]
 	g.SetBoard(board.Copy())
 	return nil
