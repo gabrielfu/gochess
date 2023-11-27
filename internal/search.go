@@ -27,7 +27,11 @@ type TranspositionTableEntry struct {
 }
 
 func (tt *TranspositionTable) Get(hash uint64) *TranspositionTableEntry {
-	return tt.entries[hash%TranpositionSize]
+	entry := tt.entries[hash%TranpositionSize]
+	if entry != nil && entry.hash == hash {
+		return entry
+	}
+	return nil
 }
 
 func (tt *TranspositionTable) Put(hash uint64, depth int, eval int, move *Move) {
