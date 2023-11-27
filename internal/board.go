@@ -224,6 +224,10 @@ func (c CastlingRights) Remove(right Castle) CastlingRights {
 	return CastlingRights(uint8(c) &^ uint8(right))
 }
 
+func (c CastlingRights) Add(right Castle) CastlingRights {
+	return CastlingRights(uint8(c) | uint8(right))
+}
+
 // Bitboard representation of a chess board.
 type Board struct {
 	whitePawns   Bitboard
@@ -321,6 +325,10 @@ func (b *Board) Copy() *Board {
 
 func (b *Board) Turn() Color {
 	return b.turn
+}
+
+func (b *Board) SetTurn(turn Color) {
+	b.turn = turn
 }
 
 // NextTurn switches the turn to the next player.
@@ -766,4 +774,16 @@ func (b *Board) LegalMoves() []*Move {
 
 func (b *Board) CastlingRights() CastlingRights {
 	return b.castlingRights
+}
+
+func (b *Board) SetCastlingRights(cr CastlingRights) {
+	b.castlingRights = cr
+}
+
+func (b *Board) EnPassantSquare() Bitboard {
+	return b.enPassantSquare
+}
+
+func (b *Board) SetEnPassantSquare(sq Square) {
+	b.enPassantSquare = Bitboard(1 << sq)
 }

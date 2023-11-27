@@ -185,9 +185,17 @@ func (g *Game) MoveCount() int {
 	return g.moveCount
 }
 
+func (g *Game) SetMoveCount(moveCount int) {
+	g.moveCount = moveCount
+}
+
 // HalfMoveClock returns the number of half moves since the last capture or pawn move.
 func (g *Game) HalfMoveClock() int {
 	return g.halfMoveClock
+}
+
+func (g *Game) SetHalfMoveClock(halfMoveClock int) {
+	g.halfMoveClock = halfMoveClock
 }
 
 func (g *Game) Moves() []*Move {
