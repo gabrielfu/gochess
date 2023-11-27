@@ -40,7 +40,7 @@ func runCli(ctx *cli.Context) error {
 		}
 
 		if eval {
-			e := gochess.Evaluate(g.Board())
+			e := gochess.Evaluate(g.Board(), g.Status())
 			bar := gochess.EvaluationBar(e, 18)
 			fmt.Println()
 			fmt.Printf("%s %.2f\n", bar, float32(e)/100)
@@ -100,7 +100,7 @@ func runCli(ctx *cli.Context) error {
 			}
 		} else {
 			fmt.Print("Engine is thinking...")
-			result := gochess.Search(g.Board(), 4)
+			result := gochess.Search(g.Board(), 10)
 			if result.Move() == nil {
 				errMsg = "Internal Error: Engine could not find a move!"
 				break
