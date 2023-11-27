@@ -7,12 +7,12 @@ A toy chess game playable against human and engine on terminal.
 ```shell
 go run cmd/main.go cli
 
-Options:
-    -h, --help   help for cli
-    -e, --eval   show evaluation bar under the chessboard
-    -f, --flip   flip the chessboard at black's turn
-    -w, --white  White will be played by engine
-    -b, --black  Black will be played by engine
+OPTIONS:
+   --flip, -f   flip the board at Black's turn (default: false)
+   --eval, -e   show the evaluation bar (default: false)
+   --white, -w  white will be played by an engine (default: false)
+   --black, -b  black will be played by an engine (default: false)
+   --help, -h   show help
 ```
 
 ## Interface
