@@ -693,8 +693,9 @@ func (b *Board) LegalMovesForPiece(candidatePieces []Piece) []*Move {
 	return moves
 }
 
-// LegalMoves returns all legal moves for the current player.
-func (b *Board) LegalMoves() []*Move {
+var LegalMovesCache = make(map[uint64][]*Move)
+
+func (b *Board) legalMoves() []*Move {
 	var candidatePieces []Piece
 	switch b.Turn() {
 	case WHITE:
@@ -703,6 +704,16 @@ func (b *Board) LegalMoves() []*Move {
 		candidatePieces = BLACK_PIECES
 	}
 	return b.LegalMovesForPiece(candidatePieces)
+}
+
+// LegalMoves returns all legal moves for the current player.
+func (b *Board) LegalMoves() []*Move {
+	if moves, ok := LegalMovesCache[ZobristHash(b)]; ok {
+		return moves
+	}
+	moves := b.legalMoves()
+	LegalMovesCache[ZobristHash(b)] = moves
+	return moves
 }
 
 func (b *Board) CastlingRights() CastlingRights {

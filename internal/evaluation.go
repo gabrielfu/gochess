@@ -148,7 +148,15 @@ func lookupAdj(piece Piece, sq Square) int {
 	}
 }
 
-func Evaluate(b *Board) int {
+func Evaluate(b *Board, result Status) int {
+	if result == WhiteWon {
+		return MAX_EVAL
+	} else if result == BlackWon {
+		return MIN_EVAL
+	} else if result == Draw {
+		return 0
+	}
+
 	eval := 0
 	for _, piece := range ALL_PIECES {
 		bb := b.GetBbForPiece(piece)

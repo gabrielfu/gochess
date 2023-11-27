@@ -57,15 +57,27 @@ func alphabeta(b *Board, depth int, alpha int, beta int) (int, *Move) {
 		return ttEntry.eval, ttEntry.move
 	}
 
-	// TODO: or game over
+	// Check for game over or drawn positions
+	if b.IsInCheckmate() {
+		if b.Turn() == WHITE {
+			return Evaluate(b, BlackWon), nil
+		} else {
+			return Evaluate(b, WhiteWon), nil
+		}
+	}
+	if b.IsInStalemate() {
+		return Evaluate(b, Draw), nil
+	}
+
+	// game in progress
 	if depth == 0 {
-		return Evaluate(b), nil
+		return Evaluate(b, InProgress), nil
 	}
 
 	var bestMove *Move
 	var best int
 	if b.Turn() == WHITE {
-		best = MIN_EVAL
+		best = MIN_EVAL - 1
 		for _, move := range b.LegalMoves() {
 			// TODO: should implement undo move so that we don't need a copy
 			cpy := b.Copy()
@@ -81,7 +93,7 @@ func alphabeta(b *Board, depth int, alpha int, beta int) (int, *Move) {
 			}
 		}
 	} else {
-		best = MAX_EVAL
+		best = MAX_EVAL + 1
 		for _, move := range b.LegalMoves() {
 			cpy := b.Copy()
 			cpy.Move(move)
