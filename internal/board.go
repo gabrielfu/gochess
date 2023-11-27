@@ -331,8 +331,8 @@ func (b *Board) SetTurn(turn Color) {
 	b.turn = turn
 }
 
-// NextTurn switches the turn to the next player.
-func (b *Board) NextTurn() {
+// SwitchTurn switches the turn to the next player.
+func (b *Board) SwitchTurn() {
 	b.turn = 1 - b.turn
 }
 
