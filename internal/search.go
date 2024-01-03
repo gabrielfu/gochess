@@ -20,11 +20,20 @@ type TranspositionTable struct {
 }
 
 type TranspositionTableEntry struct {
-	hash  uint64
-	depth int
-	eval  int
-	move  *Move
+	hash     uint64
+	depth    int
+	eval     int
+	move     *Move
+	nodeType TTNodeType
 }
+
+type TTNodeType int
+
+const (
+	Exact TTNodeType = iota
+	LowerBound
+	UpperBound
+)
 
 func (tt *TranspositionTable) Get(hash uint64) *TranspositionTableEntry {
 	entry := tt.entries[hash%TranpositionSize]
@@ -34,12 +43,13 @@ func (tt *TranspositionTable) Get(hash uint64) *TranspositionTableEntry {
 	return nil
 }
 
-func (tt *TranspositionTable) Put(hash uint64, depth int, eval int, move *Move) {
+func (tt *TranspositionTable) Put(hash uint64, depth int, eval int, move *Move, nodeType TTNodeType) {
 	tt.entries[hash%TranpositionSize] = &TranspositionTableEntry{
-		hash:  hash,
-		depth: depth,
-		eval:  eval,
-		move:  move,
+		hash:     hash,
+		depth:    depth,
+		eval:     eval,
+		move:     move,
+		nodeType: nodeType,
 	}
 }
 
@@ -58,7 +68,17 @@ func alphabeta(b *Board, depth int, alpha int, beta int) (int, *Move) {
 	hash := ZobristHash(b)
 	ttEntry := transpositionTable.Get(hash)
 	if ttEntry != nil && ttEntry.depth >= depth {
-		return ttEntry.eval, ttEntry.move
+		if ttEntry.nodeType == Exact {
+			return ttEntry.eval, ttEntry.move
+		} else if ttEntry.nodeType == LowerBound {
+			alpha = max(alpha, ttEntry.eval)
+		} else if ttEntry.nodeType == UpperBound {
+			beta = min(beta, ttEntry.eval)
+		}
+
+		if beta <= alpha {
+			return ttEntry.eval, ttEntry.move
+		}
 	}
 
 	// Check for game over or drawn positions
@@ -113,6 +133,12 @@ func alphabeta(b *Board, depth int, alpha int, beta int) (int, *Move) {
 		}
 	}
 
-	transpositionTable.Put(hash, depth, best, bestMove)
+	nodeType := Exact
+	if best <= alpha {
+		nodeType = UpperBound
+	} else if best >= beta {
+		nodeType = LowerBound
+	}
+	transpositionTable.Put(hash, depth, best, bestMove, nodeType)
 	return best, bestMove
 }
