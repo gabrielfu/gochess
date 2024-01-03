@@ -23,14 +23,28 @@ func (bb Bitboard) IsSingular() bool {
 	return bb&(bb-1) == 0
 }
 
+var BitboardSquaresCache map[Bitboard][]Square
+
+func init() {
+	BitboardSquaresCache = make(map[Bitboard][]Square)
+	for i := 0; i < 64; i++ {
+		BitboardSquaresCache[Bitboard(1<<i)] = []Square{Square(i)}
+	}
+}
+
 // Squares returns a slice of squares that are set in the bitboard.
 func (bb Bitboard) Squares() []Square {
+	if sqs, ok := BitboardSquaresCache[bb]; ok {
+		return sqs
+	}
+
 	squares := []Square{}
 	for i := 0; i < 64; i++ {
 		if bb&(1<<uint(i)) != 0 {
 			squares = append(squares, Square(i))
 		}
 	}
+	BitboardSquaresCache[bb] = squares
 	return squares
 }
 
