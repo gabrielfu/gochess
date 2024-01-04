@@ -21,20 +21,18 @@ func runCli(ctx *cli.Context) error {
 	whiteEngine := ctx.Bool("white")
 	blackEngine := ctx.Bool("black")
 	flag.Parse()
+	return runGame(flip, eval, whiteEngine, blackEngine)
+}
 
+func runGame(flip bool, eval bool, whiteEngine bool, blackEngine bool) error {
 	screen.Clear()
 	reader := bufio.NewReader(os.Stdin)
 	var errMsg string
 
 	g := gochess.NewGame()
-	var evalScore int
+	depth := 4
 
 	for {
-		if eval {
-			sr := gochess.Search(g.Board(), 10)
-			evalScore = sr.Eval()
-		}
-
 		screen.Clear()
 		screen.MoveTopLeft()
 		fmt.Println(gochess.Banner())
@@ -46,6 +44,7 @@ func runCli(ctx *cli.Context) error {
 		}
 
 		if eval {
+			evalScore := gochess.Evaluate(g.Board(), g.Status())
 			bar := gochess.EvaluationBar(evalScore, 18)
 			fmt.Println()
 			fmt.Printf("%s %.2f\n", bar, float32(evalScore)/100)
@@ -105,16 +104,6 @@ func runCli(ctx *cli.Context) error {
 			}
 		} else {
 			fmt.Print("Engine is thinking...")
-			depth := 10
-			switch g.MoveCount() {
-			case 1:
-				depth = 2
-			case 2, 3:
-				depth = 4
-			case 4, 5:
-				depth = 7
-			default:
-			}
 			result := gochess.Search(g.Board(), depth)
 			if result.Move() == nil {
 				errMsg = "Internal Error: Engine could not find a move!"
